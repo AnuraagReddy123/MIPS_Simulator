@@ -35,14 +35,3 @@ if __name__ == "__main__":
             if (instr != ""):
                 globals.instructions.append(instr)
                 instr_num += 1
-        
-        print(globals.comments)
-        print("\n")
-        print(globals.instructions)
-        print("\n")
-        print(globals.label_dict)
-    
-    pc = 0
-    written = "sub $t0, $t0, $t1" # test the instruction
-    pc = sub(pc, written)
-    print(globals.registers)

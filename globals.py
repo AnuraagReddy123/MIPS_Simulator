@@ -8,8 +8,8 @@ def initialize():
     global data_segment
     
     instructions = [] # list of the instructions read from the file
-    label_dict = {'loop' : '2'} # To store the indices of where the labels are occurring
-    data_dict = {'value' : 2} # storing the indices for data segment
+    label_dict = {} # To store the indices of where the labels are occurring
+    data_dict = {"value": 3} # storing the indices for data segment
     comments = {}
 
     base_address = int("0x10010000",16) # address of the first byte
