@@ -1,10 +1,12 @@
 from operations import *
 
 instructions = [] # list of the instructions read from the file
+label_dict = {} # To store the indices of where the labels are occurring
+comments = {}
+
 base_address = int("0x10010000",16) # address of the first byte
 data_variables = {} # storing the index values
 data_list = {} # storing the keys corresponding to the headers
-comments = {}
 
 registers = {'$r0' : '00000000','$at' : '00000000','$v0' : '00000000','$v1' : '00000000',
                   '$a0' : '00000000','$a1' : '00000000','$a2' : '00000000','$a3' : '00000000',
@@ -16,6 +18,14 @@ registers = {'$r0' : '00000000','$at' : '00000000','$v0' : '00000000','$v1' : '0
                   '$gp' : '00000000','$sp' : '00000000','$s8' : '00000000','$ra' : '00000000',}
 
 data_segment = ['00000000'] * 1024 #data segment (4 Kilobytes) , 10 bytes right now for testing
+
+def find_label (instr, instr_num):
+    label_index = instr.find(":")
+    if label_index != -1:
+        label = instr[:label_index]
+        label_dict[label] = instr_num
+        instr = instr.replace(instr[:label_index+1], "")
+    return instr
 
 def clean_instruction(instr, instr_num):
     instr = instr.strip()
@@ -35,9 +45,15 @@ if __name__ == "__main__":
     instr_num = 0
     with open('instructions.txt', 'r') as file:
         for instr in file:
+            instr = find_label(instr, instr_num)
             instr = clean_instruction(instr, instr_num)
+            
             if (instr != ""):
                 instructions.append(instr)
-                print(instr)
-            instr_num += 1
+                instr_num += 1
+        
         print(comments)
+        print("\n")
+        print(instructions)
+        print("\n")
+        print(label_dict)
