@@ -15,7 +15,7 @@ def load(register, data, s):
     mem = s.split()[2]
     register[r] = data[mem]
 
-def sub(PC,code):
+def sub(PC,code,registers):
     code = code.replace(" ","") #get rid of whitespaces
     index = code.find('$') #find first occurrence of $
     reg_code = code[index:] # get the list of registers used
@@ -28,7 +28,7 @@ def sub(PC,code):
     registers[fetched_registers[0]] = registers[fetched_registers[0]].rjust(8,'0')
     return PC+1
 
-def bne(PC,code):# for branch not equal instruction
+def bne(PC,code,registers,label_dict):# for branch not equal instruction
     code = code.replace(" ","") # get rid of whitespaces
     index = code.find('$') # find the first occurrence of $
     reg_code = code[index:] # get the list of registers used
@@ -42,7 +42,7 @@ def bne(PC,code):# for branch not equal instruction
        PC = label_dict[jump_target] # assign the PC
     return PC
 
-def store(PC,code): # for store word instruction
+def store(PC,code,data_segment,registers,data_dict): # for store word instruction
     code = code.replace(" ","") # get rid of whitespaces
     index = code.find('$') # find the first occurrence of $
     reg_code = code[index:] # get the list of registers used
