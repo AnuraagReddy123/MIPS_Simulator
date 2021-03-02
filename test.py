@@ -8,5 +8,9 @@ def test_1(b):
 if __name__ == "__main__":
     a = 6
     b = 5
-    test_1(b)
-    print(a)
+    s = "Hello World"
+    s = "      \n"
+    s.strip()
+    l = []
+    l.append(s)
+    print(l)
