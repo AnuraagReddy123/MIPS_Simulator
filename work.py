@@ -49,21 +49,19 @@ def STORE(PC,code): # for store word instruction
     index = code.find('$') # find the first occurrence of $
     reg_code = code[index:] # get the list of registers used
     fetched_registers = reg_code.split(",") # split the registers to access individually
-    jump = int(fetched_registers[1][0:fetched_registers[1].find('(')])  # number of bytes to skip
-    address_register = fetched_registers[1][fetched_registers[1].find('(')+1:fetched_registers[1].find(')')] # fetch the address register
-    dest_index = int(registers[address_register],16) + jump - base_address
-    remainder = dest_index  % 4 # the start byte within the word
-    dest_index = dest_index // 4
-    word = registers[fetched_registers[0]] # get the word to be stored
-    skip = remainder * 2 # number of nibbles to skip
-    # store the word in the data segment
-    data_segment[dest_index] = data_segment[dest_index][0:skip] + word[0:(8-skip)]
-    data_segment[dest_index+1] = word[8-skip:8] + data_segment[dest_index+1][skip:8]
-    print(data_segment)
-    return PC+4 # PC for next instruction
+    if fetched_registers[1].find('(') == -1:
+        target_name = fetched_registers[1]
+    else:
+        jump = int(fetched_registers[1][0:fetched_registers[1].find('(')])  # number of bytes to skip
+        address_register = fetched_registers[1][fetched_registers[1].find('(')+1:fetched_registers[1].find(')')] # fetch the address register
+        dest_index = int(registers[address_register],16) + jump - base_address
+        dest_index = dest_index // 4 # get the destination index
+        word = registers[fetched_registers[0]] # get the word to be stored
+        data_segment[dest_index] = word
+        return PC+1 # PC for next instruction
 
-written = "sw $t1, 2($t0)" # test the instruction
+written = "sw $t1, 8($t0)" # test the instruction
 
 PC = 0
 PC = STORE(PC,written)
-PC = STORE(PC,"sw $t1, 4($t0)")
+print(data_segment)
