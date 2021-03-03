@@ -63,6 +63,20 @@ def load(PC, code):
         globals.registers[fetched_registers[0]] = word
     return PC+1
 
+def load_int(PC, code):
+    code = code.replace(" ", "")
+    index = code.find('$') # find the first occurrence of $
+    reg_code = code[index:] # get the list of registers used
+    fetched_registers = reg_code.split(",") # split the registers to access individually
+    #Check whether int is in decimal or hex
+    if fetched_registers[1].find("0x") == -1:
+        hex_num = hex(int(fetched_registers[1]))
+    else:
+        hex_num = fetched_registers[1]
+    globals.registers[fetched_registers[0]] = hex_num[2:]
+    globals.registers[fetched_registers[0]] = globals.registers[fetched_registers[0]].rjust(8,'0')
+    return PC+1
+
 def store(PC,code): # for store word instruction
     code = code.replace(" ","") # get rid of whitespaces
     index = code.find('$') # find the first occurrence of $
