@@ -93,3 +93,14 @@ def store(PC,code): # for store word instruction
         dest_index = dest_index // 4 # get the destination index
         globals.data_segment[dest_index] = word
     return PC+1 # PC for next instruction
+
+def store_data(data_num, data):
+    for i in range(0, len(data)):
+        #check whether value is hex or not
+        if data[i].find("0x")==-1:
+            hex_num = hex(int(data[i]))
+        else:
+            hex_num = data[i];
+        globals.data_segment[i+data_num] = hex_num[2:]
+        globals.data_segment[i+data_num] = globals.data_segment[i+data_num].rjust(8, '0')
+    return data_num+len(data)

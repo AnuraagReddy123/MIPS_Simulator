@@ -1,3 +1,9 @@
+    .data
+num: .word 0x112, 14, 15
+factorial_res: .word 1234
+
+    .text
+
 main:
     li $v0, 5
     syscall                     # Store number
