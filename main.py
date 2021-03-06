@@ -65,3 +65,26 @@ if __name__ == "__main__":
     print(globals.instructions)
     print('\n')
     print(globals.label_dict)
+
+    '''
+    Insturctions would be
+    add, sub, load, load_int, store, bne, jump
+    '''
+
+    pc = 0
+    while True:
+        instruction = globals.instructions[pc].split()[0]
+        if instruction == "add":
+            pc = add(pc, globals.instructions[pc])
+        elif instruction == "sub":
+            pc = sub(pc, globals.instructions[pc])
+        elif instruction == "load":
+            pc = load(pc, globals.instructions[pc])
+        elif instruction == "load_int":
+            pc = load_int(pc, globals.instructions[pc])
+        elif instruction == "store":
+            pc = store(pc, globals.instructions[pc])
+        elif instruction == "jump":
+            pc = jump(pc, globals.instructions[pc])
+        elif instruction == "bne":
+            pc = bne(pc, globals.instructions[pc])
