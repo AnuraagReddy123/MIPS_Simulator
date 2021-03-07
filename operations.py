@@ -13,6 +13,8 @@ def add(PC, code):
     # store the hex back into registers and get rid of 0x in the beginning
     globals.registers[fetched_registers[0]] = hex_ans[2:]
     globals.registers[fetched_registers[0]] = globals.registers[fetched_registers[0]].rjust(8,'0')
+    if len(globals.registers[fetched_registers[0]]) > 8:
+        globals.registers[fetched_registers[0]] = globals.registers[fetched_registers[0]][-8:0]
     return PC+1
 
 def sub(PC,code):
@@ -26,6 +28,8 @@ def sub(PC,code):
      # store the hex back into registers and get rid of 0x in the beginning
     globals.registers[fetched_registers[0]] = hex_ans[2:]
     globals.registers[fetched_registers[0]] = globals.registers[fetched_registers[0]].rjust(8,'0')
+    if len(globals.registers[fetched_registers[0]]) > 8:
+        globals.registers[fetched_registers[0]] = globals.registers[fetched_registers[0]][-8:0]
     return PC+1
 
 
@@ -53,16 +57,24 @@ def load(PC, code):
     reg_code = code[index:] # get the list of registers used
     fetched_registers = reg_code.split(",") # split the registers to access individually
     # get the word to be stored in the register
+    #print("fetched")
+    #print(reg_code)
+    #print(fetched_registers)
     if fetched_registers[1].find('(') == -1: # if variable name is given instead of address
         word = globals.data_segment[globals.data_dict[fetched_registers[1]]]
         globals.registers[fetched_registers[0]] = word 
     else:
         jump = int(fetched_registers[1][0:fetched_registers[1].find('(')])  # number of bytes to skip
         address_register = fetched_registers[1][fetched_registers[1].find('(')+1:fetched_registers[1].find(')')] # fetch the address register
+        #print(globals.registers[address_register])
         dest_index = int(globals.registers[address_register],16) + jump - globals.base_address
+        #print(globals.registers[address_register])
         dest_index = dest_index // 4 # get the destination index
+        #print("reached")
         word = globals.data_segment[dest_index]
+        #print(fetched_registers[0])
         globals.registers[fetched_registers[0]] = word
+        #print(globals.registers[address_register])
     return PC+1
 
 def load_int(PC, code):
@@ -111,3 +123,5 @@ def jump_register(PC):
     print(globals.registers)
     print(globals.data_segment)
     print(hex(PC+base_pc).rjust(8,'0'))
+    print("reached")
+    exit(0) # exit the program 

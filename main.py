@@ -1,5 +1,5 @@
 import globals
-from operations import *
+from operations import add,sub,bne,load,load_int,jump_register,store,store_data,jump
 
 globals.initialize()
 
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     data_num = 0
     instr_num = 0
     instr_type = "data"
-    with open('test.txt', 'r') as file:
+    with open('add.s', 'r') as file:
         for instr in file:
             instr = clean_instruction(instr, instr_num)
             
@@ -57,34 +57,30 @@ if __name__ == "__main__":
                     if (instr!=""):
                         globals.instructions.append(instr)
                         instr_num += 1
-    
-    print(globals.data_segment)
-    print('\n')
-    print(globals.data_dict)
-    print('\n')
-    print(globals.instructions)
-    print('\n')
-    print(globals.label_dict)
 
     '''
-    Insturctions would be
+    Instructions would be
     add, sub, load, load_int, store, bne, jump
     '''
 
-    pc = 0
+    pc = 1
     while True:
         instruction = globals.instructions[pc].split()[0]
         if instruction == "add":
             pc = add(pc, globals.instructions[pc])
         elif instruction == "sub":
             pc = sub(pc, globals.instructions[pc])
-        elif instruction == "load":
+        elif instruction == "load" or instruction == "lw":
+            #print("fetch")
+            #print(instruction)
             pc = load(pc, globals.instructions[pc])
-        elif instruction == "load_int":
+        elif instruction == "load_int" or instruction == "li":
             pc = load_int(pc, globals.instructions[pc])
-        elif instruction == "store":
+        elif instruction == "store" or instruction == "sw":
             pc = store(pc, globals.instructions[pc])
         elif instruction == "jump":
-            pc = jump(pc, globals.instructions[pc])
+            pc = jump(pc)
         elif instruction == "bne":
             pc = bne(pc, globals.instructions[pc])
+        elif instruction == "jr":
+            jump_register(pc)

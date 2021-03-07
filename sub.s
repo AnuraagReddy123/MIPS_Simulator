@@ -10,6 +10,7 @@ value: .word 0x00000001, 0xffffffff
     main:
         li $s0, 0x10010000 # load the address of the first integer
         lw $t1, 0($s0) # load the integer 
-        lw $t2, 4($s1) # load the second integer
-        add $t3, $t2, $t1 # add the numbers
+        lw $t2, 4($s0) # load the second integer
+        sub $t3, $t1, $t2 # add the numbers
+        sw $t3, 8($s0)
         jr $ra # Exit  
