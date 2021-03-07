@@ -1,10 +1,10 @@
 # program to take test the simulator
 
-.data
+    .data
 
-value: .word 0x00000001, 0xffffffff
+value: .word 0x00000001, 0x00000005
 
-.text # assembler directive for text segment
+    .text # assembler directive for text segment
 
     .globl main
     main:

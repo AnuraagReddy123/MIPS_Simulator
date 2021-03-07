@@ -1,4 +1,5 @@
 import globals
+from utility_functions import find_2s_complement
 
 base_pc = int("400000",16)
 
@@ -14,7 +15,7 @@ def add(PC, code):
     globals.registers[fetched_registers[0]] = hex_ans[2:]
     globals.registers[fetched_registers[0]] = globals.registers[fetched_registers[0]].rjust(8,'0')
     if len(globals.registers[fetched_registers[0]]) > 8:
-        globals.registers[fetched_registers[0]] = globals.registers[fetched_registers[0]][-8:0]
+        globals.registers[fetched_registers[0]] = globals.registers[fetched_registers[0]][-8:]
     return PC+1
 
 def sub(PC,code):
@@ -24,12 +25,16 @@ def sub(PC,code):
     fetched_registers = reg_code.split(",") # split the registers to access individually 
     # perform the subtraction operation on the registers and get the answer in decimal
     temp_ans = int(globals.registers[fetched_registers[1]],16) - int(globals.registers[fetched_registers[2]],16)
-    hex_ans = hex(temp_ans) #convert the integer back into hex form
+    hex_ans = ''
+    if (temp_ans < 0):
+        hex_ans = find_2s_complement(temp_ans)
+    else:
+        hex_ans = hex(temp_ans) #convert the integer back into hex form
      # store the hex back into registers and get rid of 0x in the beginning
     globals.registers[fetched_registers[0]] = hex_ans[2:]
     globals.registers[fetched_registers[0]] = globals.registers[fetched_registers[0]].rjust(8,'0')
     if len(globals.registers[fetched_registers[0]]) > 8:
-        globals.registers[fetched_registers[0]] = globals.registers[fetched_registers[0]][-8:0]
+        globals.registers[fetched_registers[0]] = globals.registers[fetched_registers[0]][-8:]
     return PC+1
 
 
@@ -107,17 +112,6 @@ def store(PC,code): # for store word instruction
         dest_index = dest_index // 4 # get the destination index
         globals.data_segment[dest_index] = word
     return PC+1 # PC for next instruction
-
-def store_data(data_num, data):
-    for i in range(0, len(data)):
-        #check whether value is hex or not
-        if data[i].find("0x")==-1:
-            hex_num = hex(int(data[i]))
-        else:
-            hex_num = data[i]
-        globals.data_segment[i+data_num] = hex_num[2:]
-        globals.data_segment[i+data_num] = globals.data_segment[i+data_num].rjust(8, '0')
-    return data_num+len(data)
 
 def jump_register(PC):
     print(globals.registers)

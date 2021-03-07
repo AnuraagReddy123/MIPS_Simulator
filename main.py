@@ -1,48 +1,18 @@
 import globals
-from operations import add,sub,bne,load,load_int,jump_register,store,store_data,jump
+from utility_functions import *
+from operations import add, sub, bne, load, load_int, jump_register, store, jump
+
 
 globals.initialize()
-
-def find_label (instr, instr_num):
-    label_index = instr.find(":")
-    if label_index != -1:
-        label = instr[:label_index]
-        globals.label_dict[label] = instr_num
-        instr = instr.replace(instr[:label_index+1], "")
-    return instr
-
-def clean_instruction(instr, instr_num):
-    instr = instr.strip()
-    instr = instr.replace("\n", "")
-    
-    #Searching for comments
-    comment_index = instr.find('#')
-    if comment_index != -1:
-        globals.comments[instr[comment_index:]] = instr_num
-        instr = instr.replace(instr[comment_index:], "")
-        instr = instr.strip()
-    
-    return instr
-
-def edit_data(instr, data_num):
-    instr = instr.replace(" ", "")
-    variable_index = instr.find(":")
-    if variable_index!=-1:
-        variable = instr[:variable_index]
-        index = instr.find(".word")
-        data = instr[index+5:].split(',')       # Putting all the data in a list
-        globals.data_dict[variable] = data_num  
-        data_num = store_data(data_num, data)   # Placing all data in data segment properly
-    return data_num
 
 if __name__ == "__main__":
     data_num = 0
     instr_num = 0
     instr_type = "data"
-    with open('add.s', 'r') as file:
+    with open('sub.s', 'r') as file:
         for instr in file:
             instr = clean_instruction(instr, instr_num)
-            
+
             if (instr == ".data"):
                 instr_type = "data"
             elif (instr == ".text"):
@@ -54,7 +24,7 @@ if __name__ == "__main__":
                 elif(instr_type == "text"):
                     instr = find_label(instr, instr_num)
                     instr = clean_instruction(instr, instr_num)
-                    if (instr!=""):
+                    if (instr != ""):
                         globals.instructions.append(instr)
                         instr_num += 1
 
@@ -71,8 +41,8 @@ if __name__ == "__main__":
         elif instruction == "sub":
             pc = sub(pc, globals.instructions[pc])
         elif instruction == "load" or instruction == "lw":
-            #print("fetch")
-            #print(instruction)
+            # print("fetch")
+            # print(instruction)
             pc = load(pc, globals.instructions[pc])
         elif instruction == "load_int" or instruction == "li":
             pc = load_int(pc, globals.instructions[pc])
