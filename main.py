@@ -39,7 +39,7 @@ if __name__ == "__main__":
     data_num = 0
     instr_num = 0
     instr_type = "data"
-    with open('instructions.txt', 'r') as file:
+    with open('test.txt', 'r') as file:
         for instr in file:
             instr = clean_instruction(instr, instr_num)
             

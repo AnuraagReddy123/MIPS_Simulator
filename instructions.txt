@@ -40,4 +40,4 @@ factorial_base:                 # Base condition
     lw $ra, 0($sp)
     lw $t0, 4($sp)
     addu $sp, $sp, 8
-    jr $ra    
+    jr $ra

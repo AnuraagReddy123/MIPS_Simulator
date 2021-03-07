@@ -1,5 +1,7 @@
 import globals
 
+base_pc = int("400000",16)
+
 def add(PC, code):
     code = code.replace(" ","") #get rid of whitespaces
     index = code.find('$') #find first occurrence of $
@@ -100,7 +102,12 @@ def store_data(data_num, data):
         if data[i].find("0x")==-1:
             hex_num = hex(int(data[i]))
         else:
-            hex_num = data[i];
+            hex_num = data[i]
         globals.data_segment[i+data_num] = hex_num[2:]
         globals.data_segment[i+data_num] = globals.data_segment[i+data_num].rjust(8, '0')
     return data_num+len(data)
+
+def jump_register(PC):
+    print(globals.registers)
+    print(globals.data_segment)
+    print(hex(PC+base_pc).rjust(8,'0'))

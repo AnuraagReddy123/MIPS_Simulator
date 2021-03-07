@@ -6,7 +6,7 @@ def initialize():
     global base_address
     global registers
     global data_segment
-    
+    global PC    
     instructions = [] # list of the instructions read from the file
     label_dict = {} # To store the indices of where the labels are occurring
     data_dict = {} # storing the indices for data segment
@@ -16,7 +16,7 @@ def initialize():
 
     registers = {'$r0' : '00000000','$at' : '00000000','$v0' : '00000000','$v1' : '00000000',
                     '$a0' : '00000000','$a1' : '00000000','$a2' : '00000000','$a3' : '00000000',
-                    '$t0' : '10010000','$t1' : '00011223','$t2' : '00000000','$t3' : '00000000',
+                    '$t0' : '00000000','$t1' : '00000000','$t2' : '00000000','$t3' : '00000000',
                     '$t4' : '00000000','$t5' : '00000000','$t6' : '00000000','$t7' : '00000000',
                     '$s0' : '00000000','$s1' : '00000000','$s2' : '00000000','$s3' : '00000000',
                     '$s4' : '00000000','$s5' : '00000000','$s6' : '00000000','$s7' : '00000000',

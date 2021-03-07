@@ -1,0 +1,15 @@
+# program to take test the simulator
+
+.data
+
+value: .word 0x00000001, 0xffffffff
+
+.text # assembler directive for text segment
+
+    .globl main
+    main:
+        li $s0, 0x10010000 # load the address of the first integer
+        lw $t1, 0($s0) # load the integer 
+        lw $t2, 4($s1) # load the second integer
+        add $t3, $t2, $t1 # add the numbers
+        jr $ra # Exit  
