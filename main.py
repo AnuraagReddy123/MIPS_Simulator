@@ -1,6 +1,6 @@
 import globals
 from utility_functions import *
-from operations import add, sub, bne, load, load_int, jump_register, store, jump
+from operations import add, sub, bne, load, load_int, jump_register, store, jump, syscall
 
 
 globals.initialize()
@@ -9,7 +9,7 @@ if __name__ == "__main__":
     data_num = 0
     instr_num = 0
     instr_type = "data"
-    with open('sub.s', 'r') as file:
+    with open('test.s', 'r') as file:
         for instr in file:
             instr = clean_instruction(instr, instr_num)
 
@@ -54,3 +54,5 @@ if __name__ == "__main__":
             pc = bne(pc, globals.instructions[pc])
         elif instruction == "jr":
             jump_register(pc)
+        elif instruction == "syscall":
+            pc = syscall(pc)
