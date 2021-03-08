@@ -1,16 +1,19 @@
-# program to take test the simulator
-
     .data
-
-value: .word 0x00000001, 0x00000005
-
-    .text # assembler directive for text segment
-
+num: .word 5
+    
+    .text
     .globl main
-    main:
-        li $s0, 0x10010000 # load the address of the first integer
-        lw $t1, 0($s0) # load the integer 
-        lw $t2, 4($s0) # load the second integer
-        sub $t3, $t1, $t2 # add the numbers
-        sw $t3, 8($s0)
-        jr $ra # Exit  
+main:
+    li $t0, 45
+    sw $t0, num
+
+    li $t1, 10
+    li $t2, 45
+    bne $t0, $t2, loop
+    jump exit
+loop:
+    add $t0, $t0, $t1
+    bne $t0, $t2, loop
+
+exit:
+    jr $ra

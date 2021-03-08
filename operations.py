@@ -38,8 +38,9 @@ def sub(PC,code):
     return PC+1
 
 
-def jump(label):
-    pc = globals.label_dict[label]
+def jump(pc, code):
+    code = code.split()
+    pc = globals.label_dict[code[1]]
     return pc
 
 def bne(PC,code):# for branch not equal instruction

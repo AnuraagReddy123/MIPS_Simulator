@@ -49,7 +49,7 @@ if __name__ == "__main__":
         elif instruction == "store" or instruction == "sw":
             pc = store(pc, globals.instructions[pc])
         elif instruction == "jump":
-            pc = jump(pc)
+            pc = jump(pc, globals.instructions[pc])
         elif instruction == "bne":
             pc = bne(pc, globals.instructions[pc])
         elif instruction == "jr":
