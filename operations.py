@@ -120,3 +120,16 @@ def jump_register(PC):
     print(hex(PC+base_pc).rjust(8,'0'))
     print("reached")
     exit(0) # exit the program 
+
+def syscall():
+    num = globals.registers['$v0']
+    stored = 0
+    if num == 5:
+        stored = int(input())
+        if stored < 0:
+            stored = find_2s_complement(stored)
+        else:
+            stored = hex(stored)
+        globals.registers['$a0'] = stored
+    elif num == 10:
+        exit()
