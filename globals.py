@@ -6,7 +6,6 @@ def initialize():
     global base_address
     global registers
     global data_segment
-    global PC    
     instructions = [] # list of the instructions read from the file
     label_dict = {} # To store the indices of where the labels are occurring
     data_dict = {} # storing the indices for data segment

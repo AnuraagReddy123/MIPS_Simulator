@@ -10,7 +10,7 @@ if __name__ == "__main__":
     data_num = 0
     instr_num = 0
     instr_type = "data"
-    with open('test.s', 'r') as file:
+    with open('bubblesort.s', 'r') as file:
         for instr in file:
             instr = clean_instruction(instr, instr_num)
 
@@ -34,7 +34,7 @@ if __name__ == "__main__":
     add, sub, load, load_int, store, bne, jump
     '''
 
-    pc = 1
+    pc = 0
     while True:
         instruction = globals.instructions[pc].split()[0]
         if instruction == "add":
@@ -67,3 +67,4 @@ if __name__ == "__main__":
             pc = lb(pc,globals.instructions[pc])
         elif instruction == "syscall":
             pc = syscall(pc)
+
