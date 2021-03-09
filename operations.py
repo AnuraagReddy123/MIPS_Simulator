@@ -182,25 +182,42 @@ def slt(PC,code):
         globals.registers[fetched_registers[0]] = 0
     return PC+1
 
-def sb(pc,code):
+def sb(PC,code):
     code = code.replace(" ","") # get rid of whitespaces
     index = code.find('$') # find the first occurrence of $
     reg_code = code[index:] # get the list of registers used
     fetched_registers = reg_code.split(",") # split the registers to access individually
-    word = globals.registers[fetched_registers[0]] # get the word to be stored
-    if len(word) > 2:
-        word = word[-2:0] # get the last byte
+    word = globals.registers[fetched_registers[0]][-2:] # get the word to be stored
     jump = int(fetched_registers[1][0:fetched_registers[1].find('(')])  # number of bytes to skip
     address_register = fetched_registers[1][fetched_registers[1].find('(')+1:fetched_registers[1].find(')')] # fetch the address register
     dest_index = int(globals.registers[address_register],16) + jump - globals.base_address
-    remaining  = dest_index%4
-    remaining = 3-remaining
-    remaining = 2* remaining
-    globals.data_segment[][remaining:remaining+2] = word
+    inner_index  = dest_index%4
+    inner_index = 3-inner_index # because we follow little endian architecture
+    inner_index = 2 * inner_index
     dest_index = dest_index // 4 # get the destination index
-    globals.data_segment[dest_index] = word
+    globals.data_segment[dest_index][inner_index] = word[0]
+    globals.data_segment[dest_index][inner_index+1] = word[1]
     return PC+1 # PC for next instruction
-  
+
+def lb(PC,code):
+    code = code.replace(" ","") # get rid of whitespaces
+    index = code.find('$') # find the first occurrence of $
+    reg_code = code[index:] # get the list of registers used
+    fetched_registers = reg_code.split(",") # split the registers to access individually
+    # get the word to be stored in the register
+    jump = int(fetched_registers[1][0:fetched_registers[1].find('(')])  # number of bytes to skip
+    address_register = fetched_registers[1][fetched_registers[1].find('(')+1:fetched_registers[1].find(')')] # fetch the address register
+    dest_index = int(globals.registers[address_register],16) + jump - globals.base_address
+    inner_index = dest_index%4
+    inner_index = 3-inner_index # because we follow little endian architecture
+    inner_index = 2 * inner_index
+    dest_index = dest_index // 4 # get the destination index
+    word = globals.data_segment[dest_index][inner_index:inner_index+2] # get the word from memory
+    globals.registers[fetched_registers[0]] = "ffffffff"
+    globals.registers[fetched_registers[0]][7] = word[0]
+    globals.registers[fetched_registers[0]][8] = word[1]
+    return PC+1
+
 def syscall(PC):
     num = int(('0x'+globals.registers['$v0']), 16)
     stored = 0

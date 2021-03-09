@@ -1,7 +1,7 @@
 import globals
 from utility_functions import *
 
-from operations import add, sub, bne, load, load_int, store, jump, syscall,move,beq,addi,subi,slt
+from operations import add, sub, bne, load, load_int, store, jump, syscall,move,beq,addi,subi,slt,sb,lb
 
 
 globals.initialize()
@@ -61,5 +61,9 @@ if __name__ == "__main__":
             pc = subi(pc,globals.instructions[pc])
         elif instruction == "slt":
             pc = slt(pc,globals.instructions[pc])
+        elif instruction == "sb":
+            pc = sb(pc,globals.instructions[pc])
+        elif instruction == "lb":
+            pc = lb(pc,globals.instructions[pc])
         elif instruction == "syscall":
             pc = syscall(pc)
