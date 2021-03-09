@@ -1,6 +1,6 @@
 import globals
 from utility_functions import *
-from operations import add, sub, bne, load, load_int, jump_register, store, jump, syscall
+from operations import add, sub, bne, load, load_int, store, jump, syscall
 
 
 globals.initialize()
@@ -52,7 +52,7 @@ if __name__ == "__main__":
             pc = jump(pc, globals.instructions[pc])
         elif instruction == "bne":
             pc = bne(pc, globals.instructions[pc])
-        elif instruction == "jr":
-            jump_register(pc)
+        # elif instruction == "jr":
+        #     jump_register(pc)
         elif instruction == "syscall":
             pc = syscall(pc)
