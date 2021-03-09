@@ -4,14 +4,33 @@ from utility_functions import find_2s_complement
 base_pc = int("400000",16)
 
 def add(PC, code):
+    #print(code)
     code = code.replace(" ","") #get rid of whitespaces
     index = code.find('$') #find first occurrence of $
     reg_code = code[index:] # get the list of registers used
     fetched_registers = reg_code.split(",") # split the registers to access individually 
     # perform the subtraction operation on the registers and get the answer in decimal
+    #print(globals.registers[fetched_registers[1]])
     temp_ans = int(globals.registers[fetched_registers[1]],16) + int(globals.registers[fetched_registers[2]],16)
     hex_ans = hex(temp_ans) #convert the integer back into hex form
     # store the hex back into registers and get rid of 0x in the beginning
+    globals.registers[fetched_registers[0]] = hex_ans[2:]
+    globals.registers[fetched_registers[0]] = globals.registers[fetched_registers[0]].rjust(8,'0')
+    if len(globals.registers[fetched_registers[0]]) > 8:
+        globals.registers[fetched_registers[0]] = globals.registers[fetched_registers[0]][-8:]
+    return PC+1
+
+def addi(PC,code):
+    code = code.replace(" ","") #get rid of whitespaces
+    index = code.find("$") # find the first occurrence $
+    reg_code = code[index:] # get the list of registers used
+    fetched_registers = reg_code.split(",") # split the registers to access individually
+    value = 0
+    if fetched_registers[2].find("0x") != -1:
+        value = int(fetched_registers[2],16)
+    else:
+        value = int(fetched_registers[2])
+    hex_ans = hex(int(globals.registers[fetched_registers[1]],16) + value)
     globals.registers[fetched_registers[0]] = hex_ans[2:]
     globals.registers[fetched_registers[0]] = globals.registers[fetched_registers[0]].rjust(8,'0')
     if len(globals.registers[fetched_registers[0]]) > 8:
@@ -70,7 +89,9 @@ def load(PC, code):
         jump = int(fetched_registers[1][0:fetched_registers[1].find('(')])  # number of bytes to skip
         address_register = fetched_registers[1][fetched_registers[1].find('(')+1:fetched_registers[1].find(')')] # fetch the address register
         dest_index = int(globals.registers[address_register],16) + jump - globals.base_address
+        #print(code)
         dest_index = dest_index // 4 # get the destination index
+        #print(dest_index)
         word = globals.data_segment[dest_index]
         globals.registers[fetched_registers[0]] = word
     return PC+1
@@ -85,6 +106,7 @@ def load_int(PC, code):
         hex_num = hex(int(fetched_registers[1]))
     else:
         hex_num = fetched_registers[1]
+    #print(hex_num)
     globals.registers[fetched_registers[0]] = hex_num[2:]
     globals.registers[fetched_registers[0]] = globals.registers[fetched_registers[0]].rjust(8,'0')
     return PC+1
@@ -114,24 +136,6 @@ def move(PC,code):
     first_register = fetched_registers[0] # get the first register
     second_register = fetched_registers[1] # get the second register
     globals.registers[first_register] = globals.registers[second_register] 
-    return PC+1
-
-def addi(PC,code):
-    code = code.replace(" ","") #get rid of whitespaces
-    index = code.find("$") # find the first occurrence $
-    reg_code = code[index:] # get the list of registers used
-    fetched_registers = reg_code.split(",") # split the registers to access individually
-    first_register = fetched_registers[0] # get the first register
-    second_register = fetched_registers[1] # get the second register
-    value = 0
-    if fetched_registers[2].find("0x") != -1:
-        value = int(fetched_registers[2],16)
-    else:
-        value = fetched_registers[2]
-    globals.registers[first_register] = hex(int(globals.registers[second_register],16) + int(value))
-    globals.registers[fetched_registers[0]] = globals.registers[fetched_registers[0]].rjust(8,'0')
-    if len(globals.registers[fetched_registers[0]]) > 8:
-        globals.registers[fetched_registers[0]] = globals.registers[fetched_registers[0]][-8:]
     return PC+1
 
 def subi(PC,code):
@@ -177,9 +181,9 @@ def slt(PC,code):
     reg_code = code[index:] # get the list of registers used
     fetched_registers = reg_code.split(",") # split the registers to access individually
     if globals.registers[fetched_registers[1]] <  globals.registers[fetched_registers[2]]:
-        globals.registers[fetched_registers[0]] = 1
+        globals.registers[fetched_registers[0]] = "00000001"
     else:
-        globals.registers[fetched_registers[0]] = 0
+        globals.registers[fetched_registers[0]] = "00000000"
     return PC+1
 
 def sb(PC,code):
@@ -232,7 +236,6 @@ def syscall(PC):
         print(globals.registers)
         print(globals.data_segment)
         print(hex(PC+base_pc).rjust(8,'0'))
-        print("reached")
         exit()
     elif num == 1:  # Output to console
         print(int(('0x'+globals.registers['$a0']), 16))
