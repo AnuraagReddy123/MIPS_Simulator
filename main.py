@@ -1,6 +1,6 @@
 import globals
 from utility_functions import *
-from operations import add, sub, bne, load, load_int, jump_register, store, jump, syscall
+from operations import add, sub, bne, load, load_int, store, jump, syscall,move,beq,addi,subi
 
 
 globals.initialize()
@@ -41,18 +41,22 @@ if __name__ == "__main__":
         elif instruction == "sub":
             pc = sub(pc, globals.instructions[pc])
         elif instruction == "load" or instruction == "lw":
-            # print("fetch")
-            # print(instruction)
             pc = load(pc, globals.instructions[pc])
         elif instruction == "load_int" or instruction == "li":
             pc = load_int(pc, globals.instructions[pc])
         elif instruction == "store" or instruction == "sw":
             pc = store(pc, globals.instructions[pc])
-        elif instruction == "jump":
+        elif instruction == "jump" or instruction == "j":
             pc = jump(pc, globals.instructions[pc])
         elif instruction == "bne":
             pc = bne(pc, globals.instructions[pc])
-        elif instruction == "jr":
-            jump_register(pc)
+        elif instruction == "beq":
+            pc = beq(pc,globals.instructions[pc])
+        elif instruction == "move":
+            pc = move(pc,globals.instructions[pc])
+        elif instruction == "addi":
+            pc = addi(pc,globals.instructions[pc])
+        elif instruction == "subi":
+            pc = subi(pc,globals.instructions[pc])
         elif instruction == "syscall":
             pc = syscall(pc)
