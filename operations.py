@@ -114,23 +114,29 @@ def store(PC,code): # for store word instruction
         globals.data_segment[dest_index] = word
     return PC+1 # PC for next instruction
 
-def jump_register(PC):
-    print(globals.registers)
-    print(globals.data_segment)
-    print(hex(PC+base_pc).rjust(8,'0'))
-    print("reached")
-    exit(0) # exit the program 
+# def jump_register(PC):
+#     print(globals.registers)
+#     print(globals.data_segment)
+#     print(hex(PC+base_pc).rjust(8,'0'))
+#     print("reached")
+#     exit(0) # exit the program 
 
 def syscall(PC):
     num = int(('0x'+globals.registers['$v0']), 16)
     stored = 0
-    if num == 5:
+    if num == 5: # Take integer input
         stored = int(input())
         if stored < 0:
             stored = find_2s_complement(stored)
         else:
             stored = hex(stored)
         globals.registers['$a0'] = stored[2:].rjust(8, '0')
-    elif num == 10:
+    elif num == 10: # Exit application
+        print(globals.registers)
+        print(globals.data_segment)
+        print(hex(PC+base_pc).rjust(8,'0'))
+        print("reached")
         exit()
+    elif num == 1:  # Output to console
+        print(int(('0x'+globals.registers['$a0']), 16))
     return PC + 1

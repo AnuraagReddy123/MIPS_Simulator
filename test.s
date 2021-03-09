@@ -8,5 +8,8 @@ main:
     syscall
     sw $a0, num
 
+    li $v0, 1
+    syscall
+
     li $v0, 10
     syscall
