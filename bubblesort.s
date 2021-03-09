@@ -1,6 +1,6 @@
 	.data
 
-numbers: .word 8, 100, 0, 3, 12, 15, 1, 19, 45, 64		# create array which holds numbers
+numbers: .word -8, -100, 0, -3, -12, -15, -1, -19, -45, -64		# create array which holds numbers
 
 	.text
 main:

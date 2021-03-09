@@ -180,7 +180,16 @@ def slt(PC,code):
     index = code.find('$') # find the first occurrence of $
     reg_code = code[index:] # get the list of registers used
     fetched_registers = reg_code.split(",") # split the registers to access individually
-    if globals.registers[fetched_registers[1]] <  globals.registers[fetched_registers[2]]:
+    first_number = int(globals.registers[fetched_registers[1]],16)
+    second_number = int(globals.registers[fetched_registers[2]],16)
+    if globals.registers[fetched_registers[1]][0] >= '8':
+        temp = int(find_2s_complement(int(globals.registers[fetched_registers[1]],16)),16)
+        first_number = int(find_2s_complement(temp),16)
+        first_number = -temp
+    if globals.registers[fetched_registers[2]][0] >= '8':
+        temp = int(find_2s_complement(int(globals.registers[fetched_registers[2]],16)),16)
+        second_number = -temp
+    if first_number < second_number:
         globals.registers[fetched_registers[0]] = "00000001"
     else:
         globals.registers[fetched_registers[0]] = "00000000"
@@ -238,7 +247,11 @@ def syscall(PC):
         print(hex(PC+base_pc).rjust(8,'0'))
         exit()
     elif num == 1:  # Output to console
-        print(int(('0x'+globals.registers['$a0']), 16))
+        number = int(globals.registers['$a0'],16)
+        if globals.registers['$a0'] >= '8':
+            temp = int(find_2s_complement(int(globals.registers["$a0"],16)),16)
+            number = -temp
+        print(number)
     return PC + 1
   # def jump_register(PC):
 #     print(globals.registers)
