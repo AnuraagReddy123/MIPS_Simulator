@@ -3,8 +3,12 @@ import globals
 def store_data(data_num, data):
     for i in range(0, len(data)):
         #check whether value is hex or not
+        hex_num = ""
         if data[i].find("0x")==-1:
-            hex_num = hex(int(data[i]))
+            if int(data[i]) < 0:
+                hex_num = find_2s_complement(int(data[i]))
+            else:
+                hex_num = hex(int(data[i]))
         else:
             hex_num = data[i]
         globals.data_segment[i+data_num] = hex_num[2:]
