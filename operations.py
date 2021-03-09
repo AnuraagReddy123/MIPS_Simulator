@@ -170,6 +170,36 @@ def beq(PC,code):
     else:
        PC = globals.label_dict[jump_target] # assign the PC
     return PC
+
+def slt(PC,code):
+    code = code.replace(" ","") # get rid of whitespaces
+    index = code.find('$') # find the first occurrence of $
+    reg_code = code[index:] # get the list of registers used
+    fetched_registers = reg_code.split(",") # split the registers to access individually
+    if globals.registers[fetched_registers[1]] <  globals.registers[fetched_registers[2]]:
+        globals.registers[fetched_registers[0]] = 1
+    else:
+        globals.registers[fetched_registers[0]] = 0
+    return PC+1
+
+def sb(pc,code):
+    code = code.replace(" ","") # get rid of whitespaces
+    index = code.find('$') # find the first occurrence of $
+    reg_code = code[index:] # get the list of registers used
+    fetched_registers = reg_code.split(",") # split the registers to access individually
+    word = globals.registers[fetched_registers[0]] # get the word to be stored
+    if len(word) > 2:
+        word = word[-2:0] # get the last byte
+    jump = int(fetched_registers[1][0:fetched_registers[1].find('(')])  # number of bytes to skip
+    address_register = fetched_registers[1][fetched_registers[1].find('(')+1:fetched_registers[1].find(')')] # fetch the address register
+    dest_index = int(globals.registers[address_register],16) + jump - globals.base_address
+    remaining  = dest_index%4
+    remaining = 3-remaining
+    remaining = 2* remaining
+    globals.data_segment[][remaining:remaining+2] = word
+    dest_index = dest_index // 4 # get the destination index
+    globals.data_segment[dest_index] = word
+    return PC+1 # PC for next instruction
   
 def syscall(PC):
     num = int(('0x'+globals.registers['$v0']), 16)
