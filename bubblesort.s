@@ -1,13 +1,13 @@
 .data
 
-numbers: .word 8, 100, 0, 3, 7, 9, 2, 7, 3, 0		#create array which holds numbers
+numbers: .word 8, 100, 0, 3, 7, 9, 2, 7, -3, 0		#create array which holds numbers
+message: .asciiz "Sorted Array: "			#message to be printed
 
 .text
-
 main:
-	li $s7, 0x10010000			#load address of numbers into $s7
+	la $s7, numbers					#load address of numbers into $s7
 
-	li $s0, 0       #initialize counter 1 for loop 1
+	li $s0, 0					#initialize counter 1 for loop 1
 	li $s6, 9 					#n - 1
 	
 	li $s1, 0 					#initialize counter 2 for loop 2
@@ -15,8 +15,12 @@ main:
 	li $t3, 0					#initialize counter for printing
 	li $t4, 10
 
+	li $v0, 4,					#print out message
+	la $a0, message
+	syscall
+
 loop:
-	add $t7, $s1, $s1					#multiply $s1 by 2 and put it in t7
+	sll $t7, $s1, 2					#multiply $s1 by 2 and put it in t7
 	add $t7, $s7, $t7 				#add the address of numbers to t7
 
 	lw $t0, 0($t7)  				#load numbers[j]	
@@ -47,6 +51,10 @@ print:
 	li $v0, 1					#print the number
 	move $a0, $t5
 	syscall
+
+	li $a0, 32					#print space
+	li $v0, 11
+	syscall
 	
 	addi $s7, $s7, 4				#increment through the numbers
 	addi $t3, $t3, 1				#increment counter
@@ -56,4 +64,3 @@ print:
 final:	
 	li $v0, 10					#end program
 	syscall
-	
