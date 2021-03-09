@@ -105,7 +105,7 @@ def store(PC,code): # for store word instruction
         dest_index = dest_index // 4 # get the destination index
         globals.data_segment[dest_index] = word
     return PC+1 # PC for next instruction
-
+  
 def move(PC,code):
     code = code.replace(" ","") #get rid of whitespaces
     index = code.find("$") # find the first occurrence $
@@ -170,26 +170,28 @@ def beq(PC,code):
     else:
        PC = globals.label_dict[jump_target] # assign the PC
     return PC
-
+  
 def syscall(PC):
     num = int(('0x'+globals.registers['$v0']), 16)
     stored = 0
-    if num == 5:
+    if num == 5: # Take integer input
         stored = int(input())
         if stored < 0:
             stored = find_2s_complement(stored)
         else:
             stored = hex(stored)
-        globals.registers['$a0'] = stored[2:].rjust(8, '0')
-    elif num == 10:
+        globals.registers['$a0'] = stored[2:].rjust(8, '0')    
+    elif num == 10: # Exit application
         print(globals.registers)
         print(globals.data_segment)
-        print(hex(PC+base_pc).rjust(8,'0')) 
+        print(hex(PC+base_pc).rjust(8,'0'))
+        print("reached")
         exit()
+    elif num == 1:  # Output to console
+        print(int(('0x'+globals.registers['$a0']), 16))
     return PC + 1
-
-# def jump_register(PC):
+  # def jump_register(PC):
 #     print(globals.registers)
 #     print(globals.data_segment)
 #     print(hex(PC+base_pc).rjust(8,'0'))
-#     exit(0) # exit the program  
+#     exit(0) # exit the program 
