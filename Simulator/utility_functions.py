@@ -25,7 +25,7 @@ def find_label(instr, instr_num):
 
 
 def clean_instruction(instr, instr_num):
-    instr = instr.strip()
+    instr = instr.strip(' \t\n\r')
     instr = instr.replace("\n", "")
 
     # Searching for comments
@@ -33,7 +33,7 @@ def clean_instruction(instr, instr_num):
     if comment_index != -1:
         globals.comments[instr[comment_index:]] = instr_num
         instr = instr.replace(instr[comment_index:], "")
-        instr = instr.strip()
+        instr = instr.strip(' \t\n\r')
 
     return instr
 

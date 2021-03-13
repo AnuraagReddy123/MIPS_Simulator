@@ -4,13 +4,11 @@ from utility_functions import find_2s_complement
 base_pc = int("400000",16)
 
 def add(PC, code):
-    #print(code)
     code = code.replace(" ","") #get rid of whitespaces
     index = code.find('$') #find first occurrence of $
     reg_code = code[index:] # get the list of registers used
     fetched_registers = reg_code.split(",") # split the registers to access individually 
     # perform the subtraction operation on the registers and get the answer in decimal
-    #print(globals.registers[fetched_registers[1]])
     temp_ans = int(globals.registers[fetched_registers[1]],16) + int(globals.registers[fetched_registers[2]],16)
     hex_ans = hex(temp_ans) #convert the integer back into hex form
     # store the hex back into registers and get rid of 0x in the beginning
@@ -89,9 +87,7 @@ def load(PC, code):
         jump = int(fetched_registers[1][0:fetched_registers[1].find('(')])  # number of bytes to skip
         address_register = fetched_registers[1][fetched_registers[1].find('(')+1:fetched_registers[1].find(')')] # fetch the address register
         dest_index = int(globals.registers[address_register],16) + jump - globals.base_address
-        #print(code)
         dest_index = dest_index // 4 # get the destination index
-        #print(dest_index)
         word = globals.data_segment[dest_index]
         globals.registers[fetched_registers[0]] = word
     return PC+1
@@ -106,7 +102,6 @@ def load_int(PC, code):
         hex_num = hex(int(fetched_registers[1]))
     else:
         hex_num = fetched_registers[1]
-    #print(hex_num)
     globals.registers[fetched_registers[0]] = hex_num[2:]
     globals.registers[fetched_registers[0]] = globals.registers[fetched_registers[0]].rjust(8,'0')
     return PC+1
@@ -147,7 +142,7 @@ def subi(PC,code):
     if fetched_registers[2].find("0x") != -1:
         value = int(fetched_registers[2],16)
     else:
-        value = fetched_registers[2]
+        value = int(fetched_registers[2])
     temp_ans = int(globals.registers[fetched_registers[1]],16) - value
     hex_ans = ''
     if (temp_ans < 0):
@@ -244,7 +239,7 @@ def syscall(PC):
     elif num == 10: # Exit application
         print(globals.registers)
         print(globals.data_segment)
-        print(hex(PC+base_pc).rjust(8,'0'))
+        print(hex(PC*4 + base_pc).rjust(8,'0'))
         exit()
     elif num == 1:  # Output to console
         number = int(globals.registers['$a0'],16)
