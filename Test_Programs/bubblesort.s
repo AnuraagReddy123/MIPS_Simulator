@@ -1,21 +1,22 @@
-
+.data
+n: .word 10
 	.text
 main:
 	li $s7, 0x10010000				# load address of numbers into $s7
 
 	li $s0, 0						# initialize counter 1 for loop 1
-	li $s6, 10						# n
+	lw $s6, n						# n
 input: 
 	li $v0, 5
 	syscall
-	sw $a0, 0($s7)
 	addi $s7,$s7,4
+	sw $a0, 0($s7)
 	subi $s6, $s6, 1
 	bne $zero, $s6,input
 
-	li $s7,0x10010000
-	li $s6, 9						# n - 1
-	
+	li $s7,0x10010004
+	lw $s6, n						# n
+	subi $s6,$s6,1
 	li $s1, 0 						# initialize counter 2 for loop 2
 
 	li $t3, 0						# initialize counter for printing
