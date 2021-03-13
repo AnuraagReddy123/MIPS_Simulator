@@ -1,12 +1,19 @@
-	.data
-
-numbers: .word -8, -100, 0, -3, -12, -15, -1, -19, -45, -64		# create array which holds numbers
 
 	.text
 main:
 	li $s7, 0x10010000				# load address of numbers into $s7
 
 	li $s0, 0						# initialize counter 1 for loop 1
+	li $s6, 10						# n
+input: 
+	li $v0, 5
+	syscall
+	sw $a0, 0($s7)
+	addi $s7,$s7,4
+	subi $s6, $s6, 1
+	bne $zero, $s6,input
+
+	li $s7,0x10010000
 	li $s6, 9						# n - 1
 	
 	li $s1, 0 						# initialize counter 2 for loop 2
