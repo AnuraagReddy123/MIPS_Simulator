@@ -22,4 +22,4 @@ def initialize():
                     '$t8' : '00000000','$t9' : '00000000','$k0' : '00000000','$k1' : '00000000',
                     '$gp' : '00000000','$sp' : '00000000','$s8' : '00000000','$ra' : '00000000',}
 
-    data_segment = ['00000000'] * 10 #data segment (4 Kilobytes)
+    data_segment = ['00000000'] * 1024 #data segment (4 Kilobytes)
