@@ -240,7 +240,7 @@ def syscall(PC):
         print(globals.registers)
         print(globals.data_segment)
         print(hex(PC*4 + base_pc).rjust(8,'0'))
-        exit()
+        exit(0)
     elif num == 1:  # Output to console
         number = int(globals.registers['$a0'],16)
         if globals.registers['$a0'] >= '8':
