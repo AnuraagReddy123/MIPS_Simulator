@@ -51,3 +51,4 @@ Some **Warnings**
 - Strings are not yet accepted
 - bubblesort.s is made according to our instruction set
 - **Input values must be changed for different test cases and so must the value of n change**
+- Errors are not handled yet
