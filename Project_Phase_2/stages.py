@@ -1,33 +1,13 @@
-import sim_glob
+from sim_glob import *
 
-def ifetch():
-    pass
+def IF(PC,Prev_PC,clock):# instruction fetch in python
+    globals.fetched_instr = instructions[PC] #store the fetched instruction 
+    clock = clock + 1
+    Prev_PC = PC
+    PC = PC + 1
+    next_instruction = {'ID/RF' : [PC,Prev_PC,clock]}
+    queue.append(next_instruction)
 
-def idrf(clock):
-    '''
-    check for dependency with prev instr
-    if yes:
-        check if dep_reg value present in final_reg_value
-        if yes:
-            enqueue ex(decoded_instr, dependent_reg, clk+1)
-        else:
-            stall
-            enqueue idrf(fetched_string, clk+1)
-    else:
-        enqueu ex(decoded_instr, dependent_reg, clk+1)
-    '''
-    
-    pass
 
-def ex(clock):
-    '''
-    
-    '''
-    
-    pass
-
-def mem():
-    pass
-
-def wb():
+def WB():
     pass
