@@ -7,6 +7,13 @@ def initialize():
     global base_address
     global registers
     global data_segment
+    global prev_decoded_instr
+    global fetched_instr
+    global curr_decoded_instr
+    global result_of_execution
+    global mem_result
+    global final_reg_value  #This will be used to check dependencies
+    global queue
     instructions = [] # list of the instructions read from the file
     label_dict = {} # To store the indices of where the labels are occurring
     data_dict = {} # storing the indices for data segment
@@ -24,15 +31,10 @@ def initialize():
                     '$gp' : '00000000','$sp' : '00000000','$s8' : '00000000','$ra' : '00000000',}
 
     data_segment = ['00000000'] * 1024 #data segment (4 Kilobytes)
-    global fetched_instr
-    global decoded_instr
-    global result_of_execution
-    global mem_result
-    global final_reg_value  #This will be used to check dependencies
-    global queue
     queue = [] # queue for storing stages of pipeline
     fetched_instr = ""
-    decoded_instr = {"operation": "" } #Fill rest of register values 
+    curr_decoded_instr = {} #{"op": "load", src: "$r1", dest: "$r2", imm: "4"} or {"op": "add", src1: "r1", }
+    prev_decoded_instr = {}
     result_of_execution = {}
     mem_result = {}
     final_reg_value = {}
