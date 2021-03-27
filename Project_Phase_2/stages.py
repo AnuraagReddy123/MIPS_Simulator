@@ -1,14 +1,12 @@
 import sim_glob
-from utility_func import *
 
-
-def IF(PC, Prev_PC, clock):  # instruction fetch in python
-    # store the fetched instruction
-    sim_glob.fetched_instr = sim_glob.instructions[PC]
-    clock = clock + 1
-    Prev_PC = PC
-    PC = PC + 1
-    next_instruction = {'ID/RF': [PC, Prev_PC, clock]}
+def IF(PC,clock):# instruction fetch in python
+    if not sim_glob.fetched_instr: # if no instruction fetch was going on
+        sim_glob.fetched_instr = sim_glob.instructions[PC] #store the fetched instruction 
+        clock = clock + 1
+        next_instruction = {'IDRF' : clock} # Enqueue the next stage
+    else:
+        next_instruction = {'IF' : [PC,clock+1]}# Enqueue the same instruction
     sim_glob.queue.append(next_instruction)
 
 
@@ -41,10 +39,14 @@ def IDRF(clock):
 def EX():
     pass
 
-def MEM():
+def MEM(instruction_type,src_registers,dest_registers,dependent_register,clock):
+    if instruction_type == 2:
+        if not dependent_register:
+                        
     pass
 
 def WB():
     pass
+    
 
     
