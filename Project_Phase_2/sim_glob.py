@@ -30,6 +30,10 @@ def initialize():
     global final_reg_value  #This will be used to check dependencies
     global queue
     queue = [] # queue for storing stages of pipeline
+    global dic_exe 
+    global dic_mem
+    dic_exe = {} # queue for keeping track of execution operations
+    dic_mem = {} # queue for keeping track of memory operation
     fetched_instr = ""
     decoded_instr = {"operation": "" } #Fill rest of register values 
     result_of_execution = {}

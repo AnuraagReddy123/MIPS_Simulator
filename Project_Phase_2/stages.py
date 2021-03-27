@@ -8,6 +8,16 @@ def IF(PC,Prev_PC,clock):# instruction fetch in python
     next_instruction = {'ID/RF' : [PC,Prev_PC,clock]}
     queue.append(next_instruction)
 
+def IDRF():
+    pass
+
+def EX():
+    pass
+
+def MEM():
+    pass
 
 def WB():
+    pass
+
     
