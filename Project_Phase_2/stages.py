@@ -15,10 +15,28 @@ def IDRF():
 def EX():
     pass
 
-def MEM(instruction_type,src_registers,dest_registers,dependent_register,clock):
-    if instruction_type == 2:
-        if not dependent_register:
-                        
+def MEM(instruction_type,src_registers,dest_registers,clock):
+    if instruction_type == 2:# load instruction
+        src_register = next(iter(src_registers)) # get the source register
+        dest_register = next(iter(dest_registers)) # get the destination register
+        memory_address = src_registers[src_register]# fetch the memory address in the memory segment
+        dest_index = int(memory_address,16)  - sim_glob.base_address
+        dest_index = dest_index // 4 # get the destination index
+        word = sim_glob.data_segment[dest_index]
+        sim_glob.mem_result[src_register] = word # update the dic_mem
+        next_instruction = {'WB': [dest_register,word,clock+1]}
+    elif instruction_type == 3:# store instruction
+        src_register = next(iter(src_registers)) # get the source register
+        dest_register = next(iter(dest_registers)) # get the destination register
+        memory_address = src_registers[src_register]# fetch the memory address in the memory segment
+        dest_index = int(memory_address,16)  - sim_glob.base_address
+        dest_index = dest_index // 4 # get the destination index
+        word = dest_registers[dest_register]
+        sim_glob.data_segment[dest_index] = word
+        next_instruction = {'WB': [dest_register,word,clock+1]}
+    else:# any other instruction
+        next_instruction = {'WB': [dest_register,word,clock+1]}
+    sim_glob.queue.append(next_instruction)
     pass
 
 def WB():
