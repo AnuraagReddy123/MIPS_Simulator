@@ -36,13 +36,8 @@ def IDRF(clock):
         sim_glob.fetched_instr = ""
         
         # Check dependency with prev_decoded_instr (EX will move curr_decoded_instr to prev_decoded_instr)
+
         
-
-    # Check dependency
-
-def IDRF():
-    pass
-
 def EX():
     pass
 
