@@ -40,6 +40,16 @@ def IDRF(clock):
 
     # Check dependency
 
+def IDRF():
+    pass
+
+def EX():
+    pass
+
+def MEM():
+    pass
 
 def WB():
     pass
+
+    
