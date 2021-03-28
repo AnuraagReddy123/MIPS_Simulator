@@ -1,0 +1,58 @@
+import sim_glob
+from utility_func import *
+
+from operations import add, sub, bne, load, load_int, store, jump, syscall,move,beq,addi,subi,slt,sb,lb
+
+
+globals.initialize()
+
+if __name__ == "__main__":
+    data_num = 0
+    instr_num = 0
+    instr_type = "data"
+    with open('Test_Programs/bubblesort.s', 'r') as file:
+        for instr in file:
+            instr = clean_instruction(instr, instr_num)
+
+            if (instr == ".data"):
+                instr_type = "data"
+            elif (instr == ".text"):
+                instr_type = "text"
+
+            if (instr != "" and instr != ".data" and instr != ".text"):
+                if (instr_type == "data"):
+                    data_num = edit_data(instr, data_num)
+                elif(instr_type == "text"):
+                    instr = find_label(instr, instr_num)
+                    instr = clean_instruction(instr, instr_num)
+                    if (instr != ""):
+                        globals.instructions.append(instr)
+                        instr_num += 1
+
+    '''
+    Instructions would be
+    add, sub, load, load_int, store, bne, jump
+    '''
+
+    pc = 0
+    while True:
+        instruction = sim_glob.instructions[pc].split()[0]
+        if instruction == "add":
+            pc = add(pc, sim_glob.instructions[pc])
+        elif instruction == "sub":
+            pc = sub(pc, sim_glob.instructions[pc])
+        elif instruction == "load" or instruction == "lw":
+            pc = load(pc, sim_glob.instructions[pc])
+        elif instruction == "load_int" or instruction == "li":
+            pc = load_int(pc, sim_glob.instructions[pc])
+        elif instruction == "store" or instruction == "sw":
+            pc = store(pc, sim_glob.instructions[pc])
+        elif instruction == "jump" or instruction == "j":
+            pc = jump(pc, sim_glob.instructions[pc])
+        elif instruction == "bne":
+            pc = bne(pc, sim_glob.instructions[pc])
+        elif instruction == "beq":
+            pc = lb(pc,sim_glob.instructions[pc])
+        elif instruction == "syscall":
+            pc = syscall(pc)
+
