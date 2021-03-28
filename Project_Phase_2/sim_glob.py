@@ -35,8 +35,7 @@ def initialize():
     data_segment = ['00000000'] * 1024  # data segment (4 Kilobytes)
     queue = []  # queue for storing stages of pipeline
     global que_reg
-    global que_mem
-    que_reg = []  # dictionary for keeping track of execution operations
+    que_reg = []  # list for keeping track of execution operations
     fetched_instr = ""
     # {"op": "load", src: "$r1", dest: "$r2", imm: "4"} or {"op": "add", src1: "r1", }
     decoded_instr = {}

@@ -130,7 +130,6 @@ def EX(PC, clock): # Depen reg just for store
     if bool(sim_glob.result_of_execution):
         # Stall
         next_instruction = {'EX': [PC, clock+1]}
-    
     else:
         dec_instr = sim_glob.decoded_instr
         sim_glob.result_of_execution = sim_glob.decoded_instr       # This will be passed on to memory
@@ -149,7 +148,7 @@ def EX(PC, clock): # Depen reg just for store
             for i in range(0, len(sim_glob.que_reg)):
                 if sim_glob.que_reg[i].regi == dest[0] and sim_glob.que_reg[i].pc == PC:
                     sim_glob.que_reg[i].val = sim_glob.result_of_execution["dest"][dest[0]]
-            
+
             next_instruction = {"MEM": [PC, clock+1]}
 
         elif sim_glob.op_dict[op] >=2 and sim_glob.op_dict < 4:
@@ -159,12 +158,38 @@ def EX(PC, clock): # Depen reg just for store
             mem_address = add_mem(dec_instr["src"][src[0]], imm)        # Finding the memory address
             sim_glob.result_of_execution["src"] = mem_address   # Changing dictionary value to store memory address in src instead of {r1:5}
             
-            
-            pass    
+            #Check dependencies for mem to mem forwarding (ONLY FOR STORE)
+            if op == "STORE":
+                flag_src1 = 0
+                if len(sim_glob.que_reg) != 0:
+                    for i in range(len(sim_glob.que_reg)-1, -1, -1):  # Go through loop backwards
+                        if dest[0] == sim_glob.que_reg[i].regi and flag_src1 == 0:
+                            flag_src1 = 1
+                            # The register is not empty
+                            if sim_glob.que_reg[i].val != None:
+                                sim_glob.decoded_instr["dest"] = sim_glob.que_reg[i].val
+                            else:  # There would be a stall
+                                next_instruction = {"EX": [PC, clock+1]}
+                                sim_glob.decoded_instr = dec_instr
+                                sim_glob.result_of_execution = {}
+                                break
+                    else:  # If the for loop didn't break
+                        # If flag_src1 wasn't triggered then they weren't dependent registers
+                        if flag_src1 == 0:
+                            sim_glob.result_of_execution["dest"]= sim_glob.registers[dest[0]]
+                        next_instruction = {"MEM": [PC, clock+1]}
+
+                else:  # There are no dependencies
+                    sim_glob.result_of_execution["dest"] = sim_glob.registers[dest[0]]
+                    next_instruction = {"EX": [PC, clock+1]} 
+            else: # In the case of load destination is empty
+                sim_glob.result_of_execution["dest"] = None
+                next_instruction = {"EX": [PC, clock+1]}
 
         elif sim_glob.op_dict[op] >=4:
             pass
-        
+    
+    sim_glob.queue.append(next_instruction)
 
 
 def MEM(instruction_type, src_registers, dest_registers, clock):
