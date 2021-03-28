@@ -170,14 +170,14 @@ def IDRF(PC, clock):
                 if flag_break == 0:
                     # Now we have the values to compare
                     if op == "BEQ":
-                        if beq(sim_glob.decoded_instr[reg[1]], sim_glob.decoded_instr[reg[2]]) == 1:
+                        if BEQ(sim_glob.decoded_instr[reg[1]], sim_glob.decoded_instr[reg[2]]) == 1:
                             # Now get the IF from the queue
                             sim_glob.queue[0]["IF"][0] = sim_glob.label_dict[label]    # Update the new PC of the IF instruction
                             sim_glob.queue[0]["IF"][1] += 1        # Increase the clock by 1
                         else:
                             pass # Nothing happens
                     elif op == "BNE":
-                        if bne(sim_glob.decoded_instr[reg[1]], sim_glob.decoded_instr[reg[2]]) == 1:
+                        if BNE(sim_glob.decoded_instr[reg[1]], sim_glob.decoded_instr[reg[2]]) == 1:
                             # Now get the IF from the queue
                             sim_glob.queue[0]["IF"][0] = sim_glob.label_dict[label]    # Update the new PC of the IF instruction
                             sim_glob.queue[0]["IF"][1] += 1        # Increase the clock by 1
@@ -256,7 +256,6 @@ def EX(PC, clock): # Depen reg just for store
 
         elif sim_glob.op_dict[op] >=4:
             next_instruction = {"MEM": [PC, clock+1]}
-            pass
     
     sim_glob.queue.append(next_instruction)
 
