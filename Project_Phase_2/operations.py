@@ -6,3 +6,9 @@ def sub(a, b):
 
 def add_mem(a,b):
     pass
+
+def beq(a,b):
+    pass
+
+def bne(a, b):
+    pass
