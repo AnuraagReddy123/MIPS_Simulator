@@ -80,6 +80,11 @@ def fetch_imm(instr):
     index = reg[1].find("(")
     return reg[1][:index]
 
+def fetch_label(instr):
+    instr = instr.replace(" ","")
+    index = instr.find("$")
+    reg = instr[index:].split(",")
+    return reg[2]
 
 def op_type(instr):
     index = instr.find(" ")
@@ -100,6 +105,4 @@ def clean_instruction(instr, instr_num):
 
 
 if __name__ == "__main__":
-    a = {}
-    a['d'] = 10
-    print(list(a.keys()))
+    print(fetch_label("BEQ $R1, $R2, hey"))
