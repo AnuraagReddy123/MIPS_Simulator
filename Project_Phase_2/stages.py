@@ -1,4 +1,3 @@
-from os import stat_result
 from utility_func import fetch_imm, fetch_reg, op_type
 import sim_glob
 from op import *
@@ -217,9 +216,8 @@ def MEM(PC,clock):
         next_instruction = {'WB': [PC,clock+1]}
     sim_glob.result_of_execution.clear()
     sim_glob.queue.append(next_instruction)
-    pass
 
 def WB(PC,clock):
-
+    
     pass
     
