@@ -9,6 +9,7 @@ def fetch_reg(instr):
         instr = instr[index+3:]
     return fetched_registers
 
+
 def fetch_imm(instr):
     instr = instr.replace(" ", "")
     index = instr.find("$")
@@ -16,14 +17,13 @@ def fetch_imm(instr):
     index = reg[1].find("(")
     return reg[1][:index]
 
+
 def op_type(instr):
     index = instr.find(" ")
     return instr[:index]
 
 
 if __name__ == "__main__":
-    print(fetch_imm("load $r0, 14($r1)"))
-    b = "hello"
-    c = "me"
-    a = [b, c]
+    a = {}
+    a['d'] = 10
     print(a)
