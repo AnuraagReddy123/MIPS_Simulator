@@ -49,11 +49,14 @@ def initialize():
         ADD     0
         SUB     1
 
-        BNE     2
-        JUMP    3
+        LOAD    2
+        STORE   3
 
-        LOAD    4
-        STORE   5
+        BNE     4
+        BEQ     5
+        JUMP    6
+
+        
     '''
     '''
     if() --> fetched_instr --> idrf() --> decoded_instr --> ex() --> result_of_execution --> (contd below)

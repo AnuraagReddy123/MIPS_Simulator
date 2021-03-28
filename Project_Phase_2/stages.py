@@ -23,9 +23,10 @@ def IF(PC, clock):  # instruction fetch in python
 
 def IDRF(PC, clock):
     # If it is not empty
+    next_instruction = {}
     if bool(sim_glob.decoded_instr):
         # Stall
-        next_instruction = {'ID/RF': clock+1}
+        next_instruction = {'ID/RF': [PC, clock+1]}
 
     else:
         # Decode instr
@@ -66,11 +67,11 @@ def IDRF(PC, clock):
                             break
                 else:  # If the for loop didn't break
                     # If flag_src1 and flag_src2 weren't triggered then they weren't dependent registers
+                    next_instruction = {"EX": [PC, clock+1]}
                     if flag_src1 == 0:
                         sim_glob.decoded_instr["src"][reg[1]] = sim_glob.registers[reg[1]]
                     if flag_src2 == 0:
                         sim_glob.decoded_instr["src"][reg[2]] = sim_glob.registers[reg[2]]
-                    next_instruction = {"EX": [PC, clock+1]}
                     # Since the destination register is not calculated yet
                     sim_glob.que_reg.append(DepReg(reg[0], PC, None))
 
@@ -81,17 +82,13 @@ def IDRF(PC, clock):
                 next_instruction = {"EX": [PC, clock+1]}
                 sim_glob.que_reg.append(DepReg(reg[0], PC, None))
 
-        elif sim_glob.op_dict[op] >= 2 and sim_glob.op_dict[op] < 4:
-            pass  # Will do later for branch instr
-
-        elif sim_glob.op_dict[op] >= 4:
+        elif sim_glob.op_dict[op] >= 2 and sim_glob.op_dict[op] < 4: # Load type instr
             reg = fetch_reg(instr)
             # Check dependency
             flag_src1 = 0
-            flag_src2 = 0
-            # Checking dependencies
+            
             if len(sim_glob.que_reg) != 0:
-                sim_glob.decoded_instr["dest"][reg[0]] = None
+                sim_glob.decoded_instr["dest"][reg[0]] = sim_glob.registers[reg[0]]
                 sim_glob.decoded_instr["imm"] = fetch_imm(instr)
                 for i in range(len(sim_glob.que_reg)-1, -1, -1):  # Go through loop backwards
                     if reg[1] == sim_glob.que_reg[i].regi and flag_src1 == 0:
@@ -105,23 +102,28 @@ def IDRF(PC, clock):
                             sim_glob.decoded_instr = {}
                             break
                 else:  # If the for loop didn't break
-                    # If flag_src1 and flag_src2 weren't triggered then they weren't dependent registers
+                    # If flag_src1 wasn't triggered then they weren't dependent registers
                     if flag_src1 == 0:
                         sim_glob.decoded_instr["src"][reg[1]] = sim_glob.registers[reg[1]]
                     next_instruction = {"EX": [PC, clock+1]}
                     # Since the destination register is not calculated yet
+                    if op == "LOAD":
                     sim_glob.que_reg.append(DepReg(reg[0], PC, None))
 
             else:  # There are no dependencies
-                sim_glob.decoded_instr["dest"][reg[0]] = None
+                sim_glob.decoded_instr["dest"][reg[0]] = sim_glob.registers[reg[0]]
+                sim_glob.decoded_instr["imm"] = fetch_imm(instr)
                 sim_glob.decoded_instr["src"][reg[1]] = sim_glob.registers[reg[1]]
                 next_instruction = {"EX": [PC, clock+1]}
                 sim_glob.que_reg.append(DepReg(reg[0], PC, None))
 
+        elif sim_glob.op_dict[op] >= 4:
+            pass #Will do later branch instructions
+
     sim_glob.queue.append(next_instruction)
 
 
-def EX():
+def EX(PC, clock, depen_reg = None): # Depen reg just for store
     pass
 
 
