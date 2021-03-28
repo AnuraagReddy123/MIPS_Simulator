@@ -251,6 +251,7 @@ def EX(PC, clock): # Depen reg just for store
                 next_instruction = {"EX": [PC, clock+1]}
 
         elif sim_glob.op_dict[op] >=4:
+            next_instruction = {"MEM": [PC, clock+1]}
             pass
     
     sim_glob.queue.append(next_instruction)
