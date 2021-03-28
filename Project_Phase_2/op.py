@@ -17,5 +17,14 @@ def JUMP(PC,label):
     PC = sim_glob.label_dict[label]
     return PC
 
-def BNE():
-    
+def BNE(a,b):
+    if a != b:
+        return 1
+    else:
+        return 0
+
+def BEQ(a,b):
+    if a == b:
+        return 1:
+    else:
+        return 0

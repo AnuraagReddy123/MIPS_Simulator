@@ -2,7 +2,7 @@ import sim_glob
 from utility_func import *
 from stages import *
 
-from operations import add, sub, bne, load, load_int, store, jump, syscall,move,beq,addi,subi,slt,sb,lb
+from op import *
 
 
 globals.initialize()
@@ -27,7 +27,7 @@ if __name__ == "__main__":
                     instr = find_label(instr, instr_num)
                     instr = clean_instruction(instr, instr_num)
                     if (instr != ""):
-                        globals.instructions.append(instr)
+                        sim_glob.instructions.append(instr)
                         instr_num += 1
 
     '''
