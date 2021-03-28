@@ -26,4 +26,4 @@ def op_type(instr):
 if __name__ == "__main__":
     a = {}
     a['d'] = 10
-    print(a)
+    print(list(a.keys()))

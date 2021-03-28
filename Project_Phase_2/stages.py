@@ -1,5 +1,6 @@
 from utility_func import fetch_imm, fetch_reg, op_type
 import sim_glob
+from operations import *
 
 
 class DepReg:
@@ -108,7 +109,7 @@ def IDRF(PC, clock):
                     next_instruction = {"EX": [PC, clock+1]}
                     # Since the destination register is not calculated yet
                     if op == "LOAD":
-                    sim_glob.que_reg.append(DepReg(reg[0], PC, None))
+                        sim_glob.que_reg.append(DepReg(reg[0], PC, None))
 
             else:  # There are no dependencies
                 sim_glob.decoded_instr["dest"][reg[0]] = sim_glob.registers[reg[0]]
@@ -123,8 +124,47 @@ def IDRF(PC, clock):
     sim_glob.queue.append(next_instruction)
 
 
-def EX(PC, clock, depen_reg = None): # Depen reg just for store
-    pass
+def EX(PC, clock): # Depen reg just for store
+    # If it is not empty
+    next_instruction = {}
+    if bool(sim_glob.result_of_execution):
+        # Stall
+        next_instruction = {'EX': [PC, clock+1]}
+    
+    else:
+        dec_instr = sim_glob.decoded_instr
+        sim_glob.result_of_execution = sim_glob.decoded_instr       # This will be passed on to memory
+        sim_glob.decoded_instr = {}
+        
+        op = dec_instr["op"]
+        if sim_glob.op_dict[op] < 2:
+            src = list(dec_instr["src"].keys())    # To get the source registers from the dictionary
+            dest = list(dec_instr["dest"].keys())   # To get the destination register from the dictionary
+            if op == "ADD":
+                sim_glob.result_of_execution["dest"][dest[0]] = add(src[0], src[1])     # Sum of source registers
+            elif op == "SUB":
+                sim_glob.result_of_execution["dest"][dest[0]] = sub(src[0], src[1])     # Difference of source registers
+            
+            #Update value in dependent register
+            for i in range(0, len(sim_glob.que_reg)):
+                if sim_glob.que_reg[i].regi == dest[0] and sim_glob.que_reg[i].pc == PC:
+                    sim_glob.que_reg[i].val = sim_glob.result_of_execution["dest"][dest[0]]
+            
+            next_instruction = {"MEM": [PC, clock+1]}
+
+        elif sim_glob.op_dict[op] >=2 and sim_glob.op_dict < 4:
+            src = list(dec_instr["src"].keys())
+            dest = list(dec_instr["dest"].keys())
+            imm = dec_instr["imm"]
+            mem_address = add_mem(dec_instr["src"][src[0]], imm)        # Finding the memory address
+            sim_glob.result_of_execution["src"] = mem_address   # Changing dictionary value to store memory address in src instead of {r1:5}
+            
+            
+            pass    
+
+        elif sim_glob.op_dict[op] >=4:
+            pass
+        
 
 
 def MEM(instruction_type, src_registers, dest_registers, clock):
