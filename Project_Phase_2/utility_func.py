@@ -50,8 +50,21 @@ def op_type(instr):
     index = instr.find(" ")
     return instr[:index]
 
+def clean_instruction(instr, instr_num):
+    instr = instr.strip(' \t\n\r')
+    instr = instr.replace("\n", "")
+
+    # Searching for comments
+    comment_index = instr.find('#')
+    if comment_index != -1:
+        globals.comments[instr[comment_index:]] = instr_num
+        instr = instr.replace(instr[comment_index:], "")
+        instr = instr.strip(' \t\n\r')
+
+    return instr
+
 
 if __name__ == "__main__":
     a = {}
     a['d'] = 10
-    print(a)
+    print(list(a.keys()))

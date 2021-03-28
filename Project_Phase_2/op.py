@@ -18,4 +18,4 @@ def JUMP(PC,label):
     return PC
 
 def BNE():
-    pass
+    

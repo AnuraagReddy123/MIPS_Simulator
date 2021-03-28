@@ -1,5 +1,6 @@
 import sim_glob
 from utility_func import *
+from stages import *
 
 from operations import add, sub, bne, load, load_int, store, jump, syscall,move,beq,addi,subi,slt,sb,lb
 
@@ -33,26 +34,18 @@ if __name__ == "__main__":
     Instructions would be
     add, sub, load, load_int, store, bne, jump
     '''
-
+    sim_glob.queue.append({'IF' : [0,0]})
     pc = 0
-    while True:
-        instruction = sim_glob.instructions[pc].split()[0]
-        if instruction == "add":
-            pc = add(pc, sim_glob.instructions[pc])
-        elif instruction == "sub":
-            pc = sub(pc, sim_glob.instructions[pc])
-        elif instruction == "load" or instruction == "lw":
-            pc = load(pc, sim_glob.instructions[pc])
-        elif instruction == "load_int" or instruction == "li":
-            pc = load_int(pc, sim_glob.instructions[pc])
-        elif instruction == "store" or instruction == "sw":
-            pc = store(pc, sim_glob.instructions[pc])
-        elif instruction == "jump" or instruction == "j":
-            pc = jump(pc, sim_glob.instructions[pc])
-        elif instruction == "bne":
-            pc = bne(pc, sim_glob.instructions[pc])
-        elif instruction == "beq":
-            pc = lb(pc,sim_glob.instructions[pc])
-        elif instruction == "syscall":
-            pc = syscall(pc)
-
+    while sim_glob.queue:
+        instruction = sim_glob.queue.pop(0)
+        stage = next(iter(instruction))
+        if stage == 'IF':
+            IF(instruction[stage][0],instruction[stage][1])
+        elif stage == 'IDRF':
+            IDRF(instruction[stage][0],instruction[stage][1])
+        elif stage == 'EX':
+            EX(instruction[stage][0],instruction[stage][1])
+        elif stage == 'MEM':
+            MEM(instruction[stage][0],instruction[stage][1])
+        else:
+            WB(instruction[stage][0],instruction[stage][1])    
