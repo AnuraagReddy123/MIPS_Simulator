@@ -26,8 +26,7 @@ def initialize():
     global fetched_instr
     global decoded_instr
     global result_of_execution
-    global mem_result
-    global final_reg_value  #This will be used to check dependencies
+    global latest_clock # to get the latest clock cycle of a WB that just happened
     global queue
     queue = [] # queue for storing stages of pipeline
     global dic_exe 
