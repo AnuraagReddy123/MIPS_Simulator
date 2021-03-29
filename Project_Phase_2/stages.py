@@ -263,7 +263,7 @@ def EX(PC, clock): # Depen reg just for store
                 sim_glob.result_of_execution["dest"][dest[0]] = None
                 next_instruction = {"EX": [PC, clock+1]}
 
-        elif sim_glob.op_dict[op] >=4 and sim_glob.op_dict[op] < 6:
+        elif sim_glob.op_dict[op] == 6: # LI instruction
             value = sim_glob.result_of_execution['src'] # get the word in hex
             for i in range(len(sim_glob.que_reg)): # search the queue to update the value
                 if sim_glob.que_reg[i].pc == PC: # if PC is found
