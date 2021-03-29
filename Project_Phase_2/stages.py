@@ -22,6 +22,7 @@ def IF(PC, clock):  # instruction fetch in python
             sim_glob.queue.append(next_next_instrucution)
     else:
         # Enqueue the same instruction
+        sim_glob.stalled_instructions.append(sim_glob.instructions[PC])
         next_instruction = {'IF': [PC, clock+1]}
         sim_glob.queue.append(next_instruction)
 
@@ -57,6 +58,7 @@ def IDRF(PC, clock):
                             sim_glob.decoded_instr["src"][reg[1]] = sim_glob.que_reg[i].val
                         else:  # There would be a stall
                             next_instruction = {"ID/RF": [PC, clock+1]}
+                            sim_glob.stalled_instructions.append(instr)
                             sim_glob.fetched_instr = instr
                             sim_glob.decoded_instr = {}
                             break
@@ -66,6 +68,7 @@ def IDRF(PC, clock):
                         if sim_glob.que_reg[i].val != None:
                             sim_glob.decoded_instr["src"][reg[2]] = sim_glob.que_reg[i].val
                         else:  # There would be a stall
+                            sim_glob.stalled_instructions.append(instr)
                             next_instruction = {"ID/RF": [PC, clock+1]}
                             sim_glob.fetched_instr = instr
                             sim_glob.decoded_instr = {}
@@ -102,6 +105,7 @@ def IDRF(PC, clock):
                         if sim_glob.que_reg[i].val != None:
                             sim_glob.decoded_instr["src"][reg[1]] = sim_glob.que_reg[i].val
                         else:  # There would be a stall
+                            sim_glob.stalled_instructions.append(instr)
                             next_instruction = {"ID/RF": [PC, clock+1]}
                             sim_glob.fetched_instr = instr
                             sim_glob.decoded_instr = {}
@@ -138,6 +142,7 @@ def IDRF(PC, clock):
                             if sim_glob.que_reg[i].val != None:
                                 sim_glob.decoded_instr[reg[0]] = sim_glob.que_reg[i].val
                             else:  # There would be a stall
+                                sim_glob.stalled_instructions.append(instr)
                                 next_instruction = {"ID/RF": [PC, clock+1]}
                                 sim_glob.fetched_instr = instr
                                 sim_glob.decoded_instr = {}
@@ -149,6 +154,7 @@ def IDRF(PC, clock):
                             if sim_glob.que_reg[i].val != None:
                                 sim_glob.decoded_instr[reg[1]] = sim_glob.que_reg[i].val
                             else:  # There would be a stall
+                                sim_glob.stalled_instructions.append(instr)
                                 next_instruction = {"ID/RF": [PC, clock+1]}
                                 sim_glob.fetched_instr = instr
                                 sim_glob.decoded_instr = {}
