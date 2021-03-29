@@ -273,25 +273,37 @@ def MEM(PC,clock):
         src_index = src_index // 4 # get the destination index
         dest_register = next(iter(sim_glob.result_of_execution['dest'])) # get the destination register 
         word = sim_glob.data_segment[src_index] # get the word
-        sim_glob.mem_result['dest'][dest_register] = word # update the value in mem_result
-        next_instruction = {'WB': [instruction_type,PC,clock+1]}
+        for i in range(len(sim_glob.que_reg)): # search the queue to update the value
+            if sim_glob.que_reg[i].pc == PC: # if PC is found
+                sim_glob[i].val = word # update the word to be updated in WB
+                break
+        sim_glob.mem_result.update({dest_register:word}) # update the value for WB
+        next_instruction = {'WB': [clock+1]}
     elif instruction_type == 'STORE':# store instruction
         memory_address = sim_glob.result_of_execution['src']# fetch the memory address in the memory segment
         dest_index = int(memory_address,16)  - sim_glob.base_address
         dest_index = dest_index // 4 # get the destination index
         word = sim_glob.result_of_execution['dest'] # get the word from the register
         sim_glob.data_segment[dest_index] = word # store the word in the memory
-        next_instruction = {'WB': [instruction_type,PC,clock+1]}
+        next_instruction = {'WB': [clock+1]}
     else:# any other instruction
-        next_instruction = {'WB': [instruction_type,PC,clock+1]}
+        if instruction_type == 'ADD' or instruction_type == 'SUB':
+            dest_register = next(iter(sim_glob.result_of_execution['dest'])) # fetch the destination register
+            value = sim_glob.result_of_execution['dest'][dest_register] # get the value to be stored
+            for i in range(len(sim_glob.que_reg)): # search the queue to update the value
+                if sim_glob.que_reg[i].pc == PC: # if PC is found
+                    sim_glob[i].val = value # update the word to be updated in WB
+                    break
+            sim_glob.mem_result.update({dest_register:value}) # update the value for WB
+        next_instruction = {'WB': [clock+1]}
     sim_glob.result_of_execution.clear()
     sim_glob.queue.append(next_instruction)
 
-def WB(instruction_type,PC,clock):
-    if instruction_type == 'LOAD' or instruction_type == 'ADD' or instruction_type == 'SUB':
-        register = next(iter(sim_glob.mem_result['dest']))
-        value = sim_glob.mem_result['dest'][register]
-        sim_glob.registers[register] = value
+def WB(clock):
+    if sim_glob.mem_result: # if dictionary is not empty
+        dest_register = next(iter(sim_glob.mem_result))
+        value = sim_glob.mem_result[dest_register]
+        sim_glob.registers[dest_register] = value # WB to the register 
+    sim_glob.mem_result.clear()
     sim_glob.latest_clock = clock+1
-    pass
     

@@ -48,4 +48,4 @@ if __name__ == "__main__":
         elif stage == 'MEM':
             MEM(instruction[stage][0],instruction[stage][1])
         else:
-            WB(instruction[stage][0],instruction[stage][1])    
+            WB(instruction[stage][0])    
