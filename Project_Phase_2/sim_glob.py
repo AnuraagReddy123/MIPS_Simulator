@@ -15,6 +15,7 @@ def initialize():
     global queue
     global op_dict
     global latest_clock
+    global stalled_instructions
     latest_clock = 0
     instructions = []  # list of the instructions read from the file
     label_dict = {}  # To store the indices of where the labels are occurring
@@ -43,6 +44,8 @@ def initialize():
     mem_result = {}
     op_dict = {"ADD": 0, "SUB": 1, "BNE": 2,
                "JUMP": 3, "LOAD": 4, "STORE": 5}
+
+    stalled_instructions = []
     '''
         OP CODES
         ADD     0
