@@ -106,3 +106,17 @@ def clean_instruction(instr, instr_num):
 
 if __name__ == "__main__":
     print(fetch_label("BEQ $R1, $R2, hey"))
+    h = []
+    class hey:
+        def __init__(self, pc,val):
+            self.pc = pc
+            self.val = val
+    
+    
+    h.append(hey(5, 5))
+    h.append(hey(4,3))
+    print(h)
+    
+    print(h[0].pc)
+    print(h[1].val)
+    
