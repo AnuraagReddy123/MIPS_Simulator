@@ -15,6 +15,8 @@ def initialize():
     global final_reg_value  # This will be used to check dependencies
     global queue
     global op_dict
+    global latest_clock
+    latest_clock = 0
     instructions = []  # list of the instructions read from the file
     label_dict = {}  # To store the indices of where the labels are occurring
     data_dict = {}  # storing the indices for data segment

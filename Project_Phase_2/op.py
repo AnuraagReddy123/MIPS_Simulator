@@ -28,3 +28,7 @@ def BEQ(a,b):
         return 1
     else:
         return 0
+
+def add_mem(a,b):
+    temp = int(a,16) + b
+    return hex(temp)
