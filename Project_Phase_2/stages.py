@@ -195,6 +195,7 @@ def IDRF(PC, clock):
                 sim_glob.queue[0]["IF"][1] += 1        # Increase the clock by 1
                 next_instruction = {"EX": [PC, clock+1]}
         elif sim_glob.op_dict[op] == 6: # for load immediate instruction
+            reg = fetch_reg[instr]
             sim_glob.que_reg.append(DepReg(reg[0],PC,None))
             pass
     sim_glob.queue.append(next_instruction)
@@ -262,7 +263,12 @@ def EX(PC, clock): # Depen reg just for store
                 sim_glob.result_of_execution["dest"][dest[0]] = None
                 next_instruction = {"EX": [PC, clock+1]}
 
-        elif sim_glob.op_dict[op] >=4 and sim_glob.op_dict[op] < 6:
+        elif sim_glob.op_dict[op] == 6: # LI instruction
+            value = sim_glob.result_of_execution['src'] # get the word in hex
+            for i in range(len(sim_glob.que_reg)): # search the queue to update the value
+                if sim_glob.que_reg[i].pc == PC: # if PC is found
+                    sim_glob.que_reg[i].val = value # update the word to be updated in WB
+                    break
             next_instruction = {"MEM": [PC, clock+1]}
     sim_glob.queue.append(next_instruction)
 
