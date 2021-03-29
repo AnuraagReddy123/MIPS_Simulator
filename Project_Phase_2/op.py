@@ -30,5 +30,5 @@ def BEQ(a,b):
         return 0
 
 def add_mem(a,b):
-    temp = int(a,16) + b
+    temp = int(a,16) + int(b,16)
     return hex(temp)

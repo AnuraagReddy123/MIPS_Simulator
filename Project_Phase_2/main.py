@@ -11,7 +11,7 @@ if __name__ == "__main__":
     data_num = 0
     instr_num = 0
     instr_type = "data"
-    with open('Test_Programs/bubblesort.s', 'r') as file:
+    with open('test.s', 'r') as file:
         for instr in file:
             instr = clean_instruction(instr, instr_num)
 
@@ -40,6 +40,7 @@ if __name__ == "__main__":
         instruction = sim_glob.queue.pop(0)
         stage = next(iter(instruction))
         if stage == 'IF':
+            print(instruction)
             IF(instruction[stage][0],instruction[stage][1])
         elif stage == 'IDRF':
             IDRF(instruction[stage][0],instruction[stage][1])
@@ -48,4 +49,5 @@ if __name__ == "__main__":
         elif stage == 'MEM':
             MEM(instruction[stage][0],instruction[stage][1])
         else:
-            WB(instruction[stage][0],instruction[stage][1])    
+            WB(instruction[stage][0],instruction[stage][1])   
+    print(sim_glob.latest_clock)

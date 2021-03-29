@@ -42,8 +42,8 @@ def initialize():
     decoded_instr = {}
     result_of_execution = {}
     mem_result = {}
-    op_dict = {"ADD": 0, "SUB": 1, "BNE": 2,
-               "JUMP": 3, "LOAD": 4, "STORE": 5, "LI" : 6}
+    op_dict = {"ADD": 0, "SUB": 1, "BNE": 4,"BEQ" : 5,
+               "JUMP": 6, "LOAD": 2, "STORE": 3, "LI" : 7}
     stalled_instructions = [] 
     '''
         OP CODES
