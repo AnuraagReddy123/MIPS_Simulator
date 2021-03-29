@@ -72,6 +72,11 @@ def fetch_reg(instr):
         instr = instr[index+3:]
     return fetched_registers
 
+def fetch_val(instr):
+    instr = instr.replace(" ","")
+    index = instr.find("$")
+    reg = instr[index:].split(",")
+    return reg[1]
 
 def fetch_imm(instr):
     instr = instr.replace(" ", "")
@@ -105,4 +110,18 @@ def clean_instruction(instr, instr_num):
 
 
 if __name__ == "__main__":
-    print(fetch_label("BEQ $R1, $R2, hey"))
+    print(fetch_val("LI $R1, 0x1231"))
+    h = []
+    class hey:
+        def __init__(self, pc,val):
+            self.pc = pc
+            self.val = val
+    
+    
+    h.append(hey(5, 5))
+    h.append(hey(4,3))
+    print(h)
+    
+    print(h[0].pc)
+    print(h[1].val)
+    

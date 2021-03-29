@@ -1,4 +1,4 @@
-from utility_func import fetch_imm, fetch_label, fetch_reg, op_type
+from utility_func import fetch_imm, fetch_label, fetch_reg, fetch_val, op_type
 import sim_glob
 from op import *
 
@@ -194,10 +194,14 @@ def IDRF(PC, clock):
                 sim_glob.queue[0]["IF"][0] = sim_glob.label_dict[label]    # Update the new PC of the IF instruction
                 sim_glob.queue[0]["IF"][1] += 1        # Increase the clock by 1
                 next_instruction = {"EX": [PC, clock+1]}
+        
         elif sim_glob.op_dict[op] == 6: # for load immediate instruction
-            reg = fetch_reg[instr]
+            reg = fetch_reg(instr)
             sim_glob.que_reg.append(DepReg(reg[0],PC,None))
-            pass
+            sim_glob.decoded_instr["dest"] = reg[0]
+            sim_glob.decoded_instr["src"] = fetch_val(instr)
+            next_instruction = {"EX": [PC, clock+1]}
+
     sim_glob.queue.append(next_instruction)
 
 
