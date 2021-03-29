@@ -12,7 +12,6 @@ def initialize():
     global decoded_instr
     global result_of_execution
     global mem_result
-    global final_reg_value  # This will be used to check dependencies
     global queue
     global op_dict
     global latest_clock
@@ -42,7 +41,6 @@ def initialize():
     decoded_instr = {}
     result_of_execution = {}
     mem_result = {}
-    final_reg_value = {}
     op_dict = {"ADD": 0, "SUB": 1, "BNE": 2,
                "JUMP": 3, "LOAD": 4, "STORE": 5}
     '''
