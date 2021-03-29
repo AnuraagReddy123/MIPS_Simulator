@@ -44,6 +44,7 @@ def initialize():
     mem_result = {}
     op_dict = {"ADD": 0, "SUB": 1, "BNE": 2,
                "JUMP": 3, "LOAD": 4, "STORE": 5, "LI" : 6}
+    stalled_instructions = [] 
     '''
         OP CODES
         ADD     0
