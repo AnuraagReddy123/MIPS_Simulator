@@ -5,7 +5,7 @@ from stages import *
 from op import *
 
 
-globals.initialize()
+sim_glob.initialize()
 
 if __name__ == "__main__":
     data_num = 0
@@ -48,4 +48,4 @@ if __name__ == "__main__":
         elif stage == 'MEM':
             MEM(instruction[stage][0],instruction[stage][1])
         else:
-            WB(instruction[stage][0])    
+            WB(instruction[stage][0],instruction[stage][1])    

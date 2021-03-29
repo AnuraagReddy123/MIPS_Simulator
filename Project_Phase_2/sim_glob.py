@@ -44,7 +44,7 @@ def initialize():
     mem_result = {}
     final_reg_value = {}
     op_dict = {"ADD": 0, "SUB": 1, "BNE": 2,
-               "JUMP": 3, "LOAD": 4, "STORE": 5}
+               "JUMP": 3, "LOAD": 4, "STORE": 5, "LI" : 6}
     '''
         OP CODES
         ADD     0
