@@ -335,6 +335,8 @@ def MEM(PC,clock):
     elif instruction_type == 'LI':
         dest_register = sim_glob.result_of_execution['dest'] # get the destination register
         value = sim_glob.result_of_execution['src'] # get the value to be loaded
+        if value.find("0x") !=-1:
+            value = value[2:]
         sim_glob.mem_result.update({dest_register:value}) # update the value for WB
     next_instruction = {'WB': [PC,clock+1]}
     sim_glob.result_of_execution.clear()
