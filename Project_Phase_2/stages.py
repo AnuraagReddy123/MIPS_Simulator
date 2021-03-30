@@ -186,26 +186,26 @@ def IDRF(PC, clock):
                         # If flag_src1 and flag_src2 weren't triggered then they weren't dependent registers
                         next_instruction = {"EX": [PC, clock+1]}
                         if flag_src1 == 0:
-                            sim_glob.decoded_instr[reg[1]] = sim_glob.registers[reg[1]]
+                            sim_glob.decoded_instr[reg[0]] = sim_glob.registers[reg[0]]
                         if flag_src2 == 0:
-                            sim_glob.decoded_instr[reg[2]] = sim_glob.registers[reg[2]]
+                            sim_glob.decoded_instr[reg[1]] = sim_glob.registers[reg[1]]
 
                 else:  # There are no dependencies
+                    sim_glob.decoded_instr[reg[0]] = sim_glob.registers[reg[0]]
                     sim_glob.decoded_instr[reg[1]] = sim_glob.registers[reg[1]]
-                    sim_glob.decoded_instr[reg[2]] = sim_glob.registers[reg[2]]
                     next_instruction = {"EX": [PC, clock+1]}
 
                 if flag_break == 0:
                     # Now we have the values to compare
                     if op == "BEQ":
-                        if BEQ(sim_glob.decoded_instr[reg[1]], sim_glob.decoded_instr[reg[2]]) == 1:
+                        if BEQ(sim_glob.decoded_instr[reg[0]], sim_glob.decoded_instr[reg[1]]) == 1:
                             # Now get the IF from the queue
                             sim_glob.queue[0]["IF"][0] = sim_glob.label_dict[label]    # Update the new PC of the IF instruction
                             sim_glob.queue[0]["IF"][1] += 1        # Increase the clock by 1
                         else:
                             pass # Nothing happens
                     elif op == "BNE":
-                        if BNE(sim_glob.decoded_instr[reg[1]], sim_glob.decoded_instr[reg[2]]) == 1:
+                        if BNE(sim_glob.decoded_instr[reg[0]], sim_glob.decoded_instr[reg[1]]) == 1:
                             # Now get the IF from the queue
                             sim_glob.queue[0]["IF"][0] = sim_glob.label_dict[label]    # Update the new PC of the IF instruction
                             sim_glob.queue[0]["IF"][1] += 1        # Increase the clock by 1
