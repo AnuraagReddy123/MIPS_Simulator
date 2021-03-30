@@ -73,7 +73,7 @@ def IDRF(PC, clock):
                             sim_glob.decoded_instr = {}
                             break
 
-                    elif reg[2] == sim_glob.que_reg[i].regi and flag_src2 == 0:
+                    if reg[2] == sim_glob.que_reg[i].regi and flag_src2 == 0:
                         flag_src2 = 1
                         if sim_glob.que_reg[i].val != None:
                             sim_glob.decoded_instr["src"].append(Reg(reg[2], sim_glob.que_reg[i].val, 2))
@@ -171,7 +171,7 @@ def IDRF(PC, clock):
                                 flag_break = 1
                                 break
 
-                        elif reg[1] == sim_glob.que_reg[i].regi and flag_src2 == 0:
+                        if reg[1] == sim_glob.que_reg[i].regi and flag_src2 == 0:
                             flag_src2 = 1
                             if sim_glob.que_reg[i].val != None:
                                 sim_glob.decoded_instr[reg[1]] = sim_glob.que_reg[i].val
