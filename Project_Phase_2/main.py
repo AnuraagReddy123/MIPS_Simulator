@@ -51,3 +51,4 @@ if __name__ == "__main__":
         else:
             WB(instruction[stage][0],instruction[stage][1])   
     print(sim_glob.latest_clock)
+    print(sim_glob.registers['$s3'])

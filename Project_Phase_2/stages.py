@@ -234,7 +234,6 @@ def EX(PC, clock): # Depen reg just for store
                 sim_glob.result_of_execution["dest"][dest[0]] = ADD(dec_instr["src"][src[0]], dec_instr["src"][src[1]])     # Sum of source registers
             elif op == "SUB":
                 sim_glob.result_of_execution["dest"][dest[0]] = SUB(dec_instr["src"][src[0]], dec_instr["src"][src[1]])     # Difference of source registers
-            
             #Update value in dependent register
             for i in range(0, len(sim_glob.que_reg)):
                 if sim_glob.que_reg[i].regi == dest[0] and sim_glob.que_reg[i].pc == PC:
@@ -310,10 +309,6 @@ def MEM(PC,clock):
     elif instruction_type == 'ADD' or instruction_type == 'SUB':
         dest_register = next(iter(sim_glob.result_of_execution['dest'])) # fetch the destination register
         value = sim_glob.result_of_execution['dest'][dest_register] # get the value to be stored
-        for i in range(len(sim_glob.que_reg)): # search the queue to update the value
-            if sim_glob.que_reg[i].pc == PC: # if PC is found
-                sim_glob.que_reg[i].val = value # update the word to be updated in WB
-                break
         sim_glob.mem_result.update({dest_register:value}) # update the value for WB
     elif instruction_type == 'LI':
         dest_register = sim_glob.result_of_execution['dest'] # get the destination register
