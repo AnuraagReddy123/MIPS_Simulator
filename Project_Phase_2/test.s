@@ -11,3 +11,6 @@ num2: .word 6
         LOAD $s1, 0($s0) # load the word
         LOAD $s2, 4($s0) # load the second word
         SUB $s3,$s2,$s2 # sub the numbers
+        # JUMP main
+        # STORE $s3, 8($s0) # store the work back in memory segment
+        

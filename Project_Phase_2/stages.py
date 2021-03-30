@@ -344,6 +344,8 @@ def WB(PC,clock):
     if sim_glob.mem_result: # if dictionary is not empty
         dest_register = next(iter(sim_glob.mem_result))
         value = sim_glob.mem_result[dest_register]
+        if value.find("0x") !=-1:
+            value = value[2:]
         sim_glob.registers[dest_register] = value # WB to the register 
     sim_glob.mem_result.clear()
     sim_glob.latest_clock = clock+1

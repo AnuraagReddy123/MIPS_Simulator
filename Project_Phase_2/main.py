@@ -11,7 +11,7 @@ if __name__ == "__main__":
     data_num = 0
     instr_num = 0
     instr_type = "data"
-    with open('test.s', 'r') as file:
+    with open('test2.s', 'r') as file:
         for instr in file:
             instr = clean_instruction(instr, instr_num)
 
@@ -52,3 +52,4 @@ if __name__ == "__main__":
     print(sim_glob.latest_clock)
     print(sim_glob.registers['$s3'])
     print(sim_glob.stalled_instructions)
+    print(sim_glob.data_segment)
