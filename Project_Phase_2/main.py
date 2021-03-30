@@ -53,3 +53,4 @@ if __name__ == "__main__":
     print(sim_glob.registers['$s3'])
     print(sim_glob.stalled_instructions)
     print(sim_glob.data_segment)
+    print(sim_glob.registers)
