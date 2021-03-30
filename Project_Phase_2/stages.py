@@ -9,6 +9,12 @@ class DepReg:
         self.pc = pc
         self.val = val
 
+class Reg:
+    def __init__ (self, reg_name, val, num):
+        self.reg_name = reg_name
+        self.val = val
+        self.num = num
+
 
 def IF(PC, clock):  # instruction fetch in python
     if not sim_glob.fetched_instr:  # if no instruction fetch was going on
@@ -51,14 +57,15 @@ def IDRF(PC, clock):
             if len(sim_glob.que_reg) != 0:
                 sim_glob.decoded_instr["dest"] = {}
                 sim_glob.decoded_instr["dest"][reg[0]] = None
-                sim_glob.decoded_instr["src"] = {}
+                sim_glob.decoded_instr["src"] = []
                 for i in range(len(sim_glob.que_reg)-1, -1, -1):  # Go through loop backwards
                     if reg[1] == sim_glob.que_reg[i].regi and flag_src1 == 0:
                         flag_src1 = 1
                         # The register is not empty
                         next_instruction = {"EX": [PC, clock+1]}
                         if sim_glob.que_reg[i].val != None:
-                            sim_glob.decoded_instr["src"][reg[1]] = sim_glob.que_reg[i].val
+                            sim_glob.decoded_instr["src"].append(Reg(reg[1], sim_glob.que_reg[i].val, 1))
+                            # sim_glob.decoded_instr["src"][reg[1]] = sim_glob.que_reg[i].val
                         else:  # There would be a stall
                             next_instruction = {"IDRF": [PC, clock+1]}
                             sim_glob.stalled_instructions.append(instr)
@@ -69,7 +76,8 @@ def IDRF(PC, clock):
                     elif reg[2] == sim_glob.que_reg[i].regi and flag_src2 == 0:
                         flag_src2 = 1
                         if sim_glob.que_reg[i].val != None:
-                            sim_glob.decoded_instr["src"][reg[2]] = sim_glob.que_reg[i].val
+                            sim_glob.decoded_instr["src"].append(Reg(reg[2], sim_glob.que_reg[i].val, 2))
+                            # sim_glob.decoded_instr["src"][reg[2]] = sim_glob.que_reg[i].val
                         else:  # There would be a stall
                             sim_glob.stalled_instructions.append(instr)
                             next_instruction = {"IDRF": [PC, clock+1]}
@@ -80,18 +88,21 @@ def IDRF(PC, clock):
                     # If flag_src1 and flag_src2 weren't triggered then they weren't dependent registers
                     next_instruction = {"EX": [PC, clock+1]}
                     if flag_src1 == 0:
-                        sim_glob.decoded_instr["src"][reg[1]] = sim_glob.registers[reg[1]]
+                        sim_glob.decoded_instr["src"].append(Reg(reg[1], sim_glob.registers[reg[1]], 1))
+                        # sim_glob.decoded_instr["src"][reg[1]] = sim_glob.registers[reg[1]]
                     if flag_src2 == 0:
-                        sim_glob.decoded_instr["src"][reg[2]] = sim_glob.registers[reg[2]]
+                        sim_glob.decoded_instr["src"].append(Reg(reg[2], sim_glob.registers[reg[2]], 2))
                     # Since the destination register is not calculated yet
                     sim_glob.que_reg.append(DepReg(reg[0], PC, None))
 
             else:  # There are no dependencies
                 sim_glob.decoded_instr["dest"] = {}
                 sim_glob.decoded_instr["dest"][reg[0]] = None
-                sim_glob.decoded_instr["src"] = {}
-                sim_glob.decoded_instr["src"][reg[1]] = sim_glob.registers[reg[1]]
-                sim_glob.decoded_instr["src"][reg[2]] = sim_glob.registers[reg[2]]
+                sim_glob.decoded_instr["src"] = []
+                sim_glob.decoded_instr["src"].append(Reg(reg[1], sim_glob.registers[reg[1]], 1))
+                sim_glob.decoded_instr["src"].append(Reg(reg[2], sim_glob.registers[reg[2]], 2))
+                # sim_glob.decoded_instr["src"][reg[1]] = sim_glob.registers[reg[1]]
+                # sim_glob.decoded_instr["src"][reg[2]] = sim_glob.registers[reg[2]]
                 next_instruction = {"EX": [PC, clock+1]}
                 sim_glob.que_reg.append(DepReg(reg[0], PC, None))
 
@@ -228,12 +239,19 @@ def EX(PC, clock): # Depen reg just for store
         
         op = dec_instr["op"]
         if sim_glob.op_dict[op] < 2:
-            src = list(dec_instr["src"].keys())    # To get the source registers from the dictionary
             dest = list(dec_instr["dest"].keys())   # To get the destination register from the dictionary
+            reg1 = ""
+            reg2 = ""
+            if dec_instr["src"][0].num==1:
+                reg1 = dec_instr["src"][0].val
+                reg2 = dec_instr["src"][1].val
+            elif dec_instr["src"][0].num == 2:
+                reg2 = dec_instr["src"][0].val
+                reg1 = dec_instr["src"][1].val
             if op == "ADD":
-                sim_glob.result_of_execution["dest"][dest[0]] = ADD(dec_instr["src"][src[0]], dec_instr["src"][src[1]])     # Sum of source registers
+                sim_glob.result_of_execution["dest"][dest[0]] = ADD(reg1, reg2)     # Sum of source registers
             elif op == "SUB":
-                sim_glob.result_of_execution["dest"][dest[0]] = SUB(dec_instr["src"][src[0]], dec_instr["src"][src[1]])     # Difference of source registers
+                sim_glob.result_of_execution["dest"][dest[0]] = SUB(reg1, reg2)     # Difference of source registers
             
             #Update value in dependent register
             for i in range(0, len(sim_glob.que_reg)):

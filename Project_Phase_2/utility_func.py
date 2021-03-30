@@ -120,8 +120,12 @@ if __name__ == "__main__":
     
     h.append(hey(5, 5))
     h.append(hey(4,3))
-    print(h)
+    # print(h)
     
-    print(h[0].pc)
-    print(h[1].val)
-    
+    # print(h[0].pc)
+    # print(h[1].val)
+
+    a = {}
+    a["r"] = hey(2,3)
+    print(a)
+    print(a["r"].pc)
