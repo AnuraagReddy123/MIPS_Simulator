@@ -2,21 +2,18 @@
 num: .word 4
 
 # Program to test our simulator
+
+.data
+
+num: .word 5
+
 .text
     
     main:
-        LI $v0, 0x00000000 # load the address of the first word 
-        LI $t0, 0x00000000
-        LI $t1, 0x00000001
-        LI $t2, 0x00000003
-        LI $t3, 0x10010000
-        LOAD $t4, 0($t3)
-    
-    loop:
-        BEQ $t0, $t2, exit
-        ADD $t0, $t0, $t1
-        ADD $v0, $t1, $t2
-        JUMP loop
-
+        LI $s0, 0x10010000
+        STORE $s2, 0($s0)
+        LOAD $s1,0($s0)
+        JUMP exit
+        SUB $s1,$s2,$s3
     exit:
-        ADD $t0, $t0, $t1
+        ADD $s1,$s1,$s1 

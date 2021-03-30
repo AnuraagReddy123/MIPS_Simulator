@@ -353,7 +353,11 @@ def WB(PC,clock):
         value = sim_glob.mem_result[dest_register]
         if value.find("0x") !=-1:
             value = value[2:]
-        sim_glob.registers[dest_register] = value # WB to the register 
+        sim_glob.registers[dest_register] = value # WB to the register
+        for i in range(len(sim_glob.que_reg)): # search the queue to update the value
+                if sim_glob.que_reg[i].pc == PC: # if PC is found
+                    sim_glob.que_reg[i].val = value # delete the word 
+                    break
     sim_glob.mem_result.clear()
     sim_glob.latest_clock = clock+1
     
