@@ -16,12 +16,13 @@ def initialize():
     global op_dict
     global latest_clock
     global stalled_instructions
+    global data_forwarding
     latest_clock = 0
     instructions = []  # list of the instructions read from the file
     label_dict = {}  # To store the indices of where the labels are occurring
     data_dict = {}  # storing the indices for data segment
     comments = {}
-
+    data_forwarding = True
     base_address = int("0x10010000", 16)  # address of the first byte
 
     registers = {'$zero': '00000000', '$at': '00000000', '$v0': '00000000', '$v1': '00000000',
