@@ -200,6 +200,7 @@ def IDRF(PC, clock):
                     if op == "BEQ":
                         if BEQ(sim_glob.decoded_instr[reg[0]], sim_glob.decoded_instr[reg[1]]) == 1:
                             # Now get the IF from the queue
+                            sim_glob.stalled_instructions.append(sim_glob.instructions[sim_glob.label_dict[label]])
                             sim_glob.queue[0]["IF"][0] = sim_glob.label_dict[label]    # Update the new PC of the IF instruction
                             sim_glob.queue[0]["IF"][1] += 1        # Increase the clock by 1
                         else:
@@ -207,12 +208,14 @@ def IDRF(PC, clock):
                     elif op == "BNE":
                         if BNE(sim_glob.decoded_instr[reg[0]], sim_glob.decoded_instr[reg[1]]) == 1:
                             # Now get the IF from the queue
+                            sim_glob.stalled_instructions.append(sim_glob.instructions[sim_glob.label_dict[label]])
                             sim_glob.queue[0]["IF"][0] = sim_glob.label_dict[label]    # Update the new PC of the IF instruction
                             sim_glob.queue[0]["IF"][1] += 1        # Increase the clock by 1
                         else:
                             pass # Nothing happens
             elif op == "JUMP":
                 label = instr.split()[1]
+                sim_glob.stalled_instructions.append(sim_glob.instructions[sim_glob.label_dict[label]])
                 sim_glob.queue[0]["IF"][0] = sim_glob.label_dict[label]    # Update the new PC of the IF instruction
                 sim_glob.queue[0]["IF"][1] += 1        # Increase the clock by 1
                 next_instruction = {"EX": [PC, clock+1]}

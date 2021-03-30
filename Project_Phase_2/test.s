@@ -1,3 +1,6 @@
+.data
+num: .word 4
+
 # Program to test our simulator
 .text
     
@@ -6,6 +9,8 @@
         LI $t0, 0x00000000
         LI $t1, 0x00000001
         LI $t2, 0x00000003
+        LI $t3, 0x10010000
+        LOAD $t4, 0($t3)
     
     loop:
         BEQ $t0, $t2, exit
