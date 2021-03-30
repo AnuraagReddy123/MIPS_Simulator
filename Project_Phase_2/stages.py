@@ -300,6 +300,8 @@ def EX(PC, clock): # Depen reg just for store
 
         elif sim_glob.op_dict[op] == 7: # LI instruction
             value = sim_glob.result_of_execution['src'] # get the word in hex
+            if value.find("0x") !=-1:
+                value = value[2:]
             for i in range(len(sim_glob.que_reg)): # search the queue to update the value
                 if sim_glob.que_reg[i].pc == PC: # if PC is found
                     sim_glob.que_reg[i].val = value # update the word to be updated in WB
