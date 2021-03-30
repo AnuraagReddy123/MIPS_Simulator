@@ -40,7 +40,6 @@ if __name__ == "__main__":
         instruction = sim_glob.queue.pop(0)
         stage = next(iter(instruction))
         if stage == 'IF':
-            print(instruction)
             IF(instruction[stage][0],instruction[stage][1])
         elif stage == 'IDRF':
             IDRF(instruction[stage][0],instruction[stage][1])
@@ -52,3 +51,4 @@ if __name__ == "__main__":
             WB(instruction[stage][0],instruction[stage][1])   
     print(sim_glob.latest_clock)
     print(sim_glob.registers['$s3'])
+    print(sim_glob.stalled_instructions)
