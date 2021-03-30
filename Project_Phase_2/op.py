@@ -2,7 +2,12 @@ from utility_func import find_2s_complement
 import sim_glob
 
 def ADD(a,b):
-    return hex(int(a,16)+int(b,16))
+    temp_ans = hex(int(a,16)+int(b,16))
+    temp_ans = temp_ans[2:]
+    temp_ans = temp_ans.rjust(8,'0')
+    if len(temp_ans) > 8:
+        temp_ans = temp_ans[-8:]
+    return temp_ans
 
 def SUB(a,b):
     temp_ans = int(a,16) - int(b,16)
@@ -11,7 +16,11 @@ def SUB(a,b):
         hex_ans = find_2s_complement(temp_ans)
     else:
         hex_ans = hex(temp_ans) #convert the integer back into hex form
-    return temp_ans
+    hex_ans = hex_ans[2:]
+    hex_ans = hex_ans.rjust(8,'0')
+    if len(hex_ans) > 8:
+        hex_ans = hex_ans[-8:]
+    return hex_ans
 
 def JUMP(PC,label):
     PC = sim_glob.label_dict[label]
@@ -30,5 +39,5 @@ def BEQ(a,b):
         return 0
 
 def add_mem(a,b):
-    temp = int(a,16) + b
+    temp = int(a,16) + int(b,16)
     return hex(temp)

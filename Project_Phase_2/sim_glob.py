@@ -33,7 +33,7 @@ def initialize():
                  '$t8': '00000000', '$t9': '00000000', '$k0': '00000000', '$k1': '00000000',
                  '$gp': '00000000', '$sp': '00000000', '$s8': '00000000', '$ra': '00000000', }
 
-    data_segment = ['00000000'] * 1024  # data segment (4 Kilobytes)
+    data_segment = ['00000000'] * 10  # data segment (4 Kilobytes)
     queue = []  # queue for storing stages of pipeline
     global que_reg
     que_reg = []  # list for keeping track of execution operations
@@ -42,8 +42,9 @@ def initialize():
     decoded_instr = {}
     result_of_execution = {}
     mem_result = {}
-    op_dict = {"ADD": 0, "SUB": 1, "BNE": 2,
-               "JUMP": 3, "LOAD": 4, "STORE": 5, "LI" : 6}
+    op_dict = {"ADD": 0, "SUB": 1, "BNE": 4,"BEQ" : 5,
+               "JUMP": 6, "LOAD": 2, "STORE": 3, "LI" : 7,
+               }
     stalled_instructions = [] 
     '''
         OP CODES

@@ -1,7 +1,7 @@
 import sim_glob
 from utility_func import *
 from stages import *
-
+from collections import OrderedDict
 from op import *
 
 
@@ -11,7 +11,7 @@ if __name__ == "__main__":
     data_num = 0
     instr_num = 0
     instr_type = "data"
-    with open('Test_Programs/bubblesort.s', 'r') as file:
+    with open('test.s', 'r') as file:
         for instr in file:
             instr = clean_instruction(instr, instr_num)
 
@@ -48,4 +48,15 @@ if __name__ == "__main__":
         elif stage == 'MEM':
             MEM(instruction[stage][0],instruction[stage][1])
         else:
-            WB(instruction[stage][0],instruction[stage][1])    
+            WB(instruction[stage][0],instruction[stage][1])
+    number_of_stalls = len(sim_glob.stalled_instructions)
+    print(f"Number of cycles: {sim_glob.latest_clock}")
+    print(f"Number of stalls: {number_of_stalls}")
+    number_of_instructions = len(sim_glob.instructions)
+    IPC = number_of_instructions / sim_glob.latest_clock
+    print(f"IPC of the pipeline: {IPC}")
+    # remove the duplicated instructions 
+    sim_glob.stalled_instructions = list(OrderedDict.fromkeys(sim_glob.stalled_instructions))
+    print(f"List of stalled instructions {sim_glob.stalled_instructions}")
+    print(sim_glob.data_segment)
+    print(sim_glob.registers)
