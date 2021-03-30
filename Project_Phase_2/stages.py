@@ -257,9 +257,10 @@ def EX(PC, clock): # Depen reg just for store
                 sim_glob.result_of_execution["dest"][dest[0]] = SUB(reg1, reg2)     # Difference of source registers
             
             #Update value in dependent register
-            for i in range(0, len(sim_glob.que_reg)):
-                if sim_glob.que_reg[i].regi == dest[0] and sim_glob.que_reg[i].pc == PC:
-                    sim_glob.que_reg[i].val = sim_glob.result_of_execution["dest"][dest[0]]
+            if sim_glob.data_forwarding:
+                for i in range(0, len(sim_glob.que_reg)):
+                    if sim_glob.que_reg[i].regi == dest[0] and sim_glob.que_reg[i].pc == PC:
+                        sim_glob.que_reg[i].val = sim_glob.result_of_execution["dest"][dest[0]]
 
             next_instruction = {"MEM": [PC, clock+1]}
 
@@ -305,10 +306,11 @@ def EX(PC, clock): # Depen reg just for store
             value = sim_glob.result_of_execution['src'] # get the word in hex
             if value.find("0x") !=-1:
                 value = value[2:]
-            for i in range(len(sim_glob.que_reg)): # search the queue to update the value
-                if sim_glob.que_reg[i].pc == PC: # if PC is found
-                    sim_glob.que_reg[i].val = value # update the word to be updated in WB
-                    break
+            if sim_glob.data_forwarding:
+                for i in range(len(sim_glob.que_reg)): # search the queue to update the value
+                    if sim_glob.que_reg[i].pc == PC: # if PC is found
+                        sim_glob.que_reg[i].val = value # update the word to be updated in WB
+                        break
             next_instruction = {"MEM": [PC, clock+1]}
     
     sim_glob.queue.append(next_instruction)
@@ -322,10 +324,11 @@ def MEM(PC,clock):
         src_index = src_index // 4 # get the destination index
         dest_register = next(iter(sim_glob.result_of_execution['dest'])) # get the destination register 
         word = sim_glob.data_segment[src_index] # get the word
-        for i in range(len(sim_glob.que_reg)): # search the queue to update the value
-            if sim_glob.que_reg[i].pc == PC: # if PC is found
-                sim_glob.que_reg[i].val = word # update the word to be updated in WB
-                break
+        if sim_glob.data_forwarding:
+            for i in range(len(sim_glob.que_reg)): # search the queue to update the value
+                if sim_glob.que_reg[i].pc == PC: # if PC is found
+                    sim_glob.que_reg[i].val = word # update the word to be updated in WB
+                    break
         sim_glob.mem_result.update({dest_register:word}) # update the value for WB
     elif instruction_type == 'STORE':# store instruction
         memory_address = sim_glob.result_of_execution['src']# fetch the memory address in the memory segment
@@ -354,10 +357,12 @@ def WB(PC,clock):
         if value.find("0x") !=-1:
             value = value[2:]
         sim_glob.registers[dest_register] = value # WB to the register
-        for i in range(len(sim_glob.que_reg)): # search the queue to update the value
+        if not sim_glob.data_forwarding:
+            for i in range(len(sim_glob.que_reg)): # search the queue to update the value
                 if sim_glob.que_reg[i].pc == PC: # if PC is found
-                    sim_glob.que_reg[i].val = value # delete the word 
+                    sim_glob.que_reg[i].val = value # update the word
                     break
+    
     sim_glob.mem_result.clear()
     sim_glob.latest_clock = clock+1
     
