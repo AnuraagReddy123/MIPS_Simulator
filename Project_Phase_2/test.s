@@ -5,5 +5,5 @@ num: .word 4
     
     main:
         LI $s0, 0x10010000
-        LOAD $s1, 0($s0)
-        ADD $s1,$s1,$s1
+        ADD $s1,$s2,$s2
+        SUB $s1,$s1,$s2

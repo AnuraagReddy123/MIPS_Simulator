@@ -59,9 +59,9 @@ if __name__ == "__main__":
     print(f"Number of stalls: {number_of_stalls}")
     number_of_instructions = len(sim_glob.instructions)
     IPC = number_of_instructions / sim_glob.latest_clock
-    print(f"IPC of the pipeline: {IPC}")
+    print(f"IPC of the pipeline: {IPC:.3f}")
     # remove the duplicated instructions 
     sim_glob.stalled_instructions = list(OrderedDict.fromkeys(sim_glob.stalled_instructions))
     print(f"List of stalled instructions {sim_glob.stalled_instructions}")
-    print(sim_glob.data_segment)
+    #print(sim_glob.data_segment) uncomment this line to print the data segment
     print(sim_glob.registers)
