@@ -63,13 +63,13 @@ Some **Warnings**
 We have incorporated pipeline into our simulator in the second phase of our simulator. We have followed the MIPS
 pipeline consisting of six stages: Instruction Fetch(IF), Instruction Decode and Register Fetch(IDRF),Execution(EX),
 Memory(MEM) and Write Back(WB). The pipeline has only been incorporated for few instructions right now: 
--ADD
--SUB
--LOAD
--STORE
--BNE
--BEQ
--JUMP
+- ADD
+- SUB
+- LOAD
+- STORE
+- BNE
+- BEQ
+- JUMP
 
 An assembly code written using above instructions can be run on our simulator. The program first asks the user if
 the program be executed wit or without forwarding. Once, the user enter the choice, the program is run and at the end
