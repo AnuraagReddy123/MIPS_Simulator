@@ -34,6 +34,11 @@ if __name__ == "__main__":
     Instructions would be
     add, sub, load, load_int, store, bne, jump
     '''
+    forwarding = str(input("Enter yes if forwarding needs to be enabled else enter no: ")).lower()
+    if forwarding == "yes":
+        sim_glob.data_forwarding = True
+    else:
+        sim_glob.data_forwarding = False
     sim_glob.queue.append({'IF' : [0,0]})
     pc = 0
     while sim_glob.queue:
