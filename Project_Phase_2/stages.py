@@ -421,7 +421,7 @@ def MEM(PC,clock):
         dest_index = dest_index // 4 # get the destination index
         word = sim_glob.result_of_execution['dest'] # get the word from the register
         sim_glob.data_segment[dest_index] = word # store the word in the memory
-    elif instruction_type == 'ADD' or instruction_type == 'SUB':
+    elif instruction_type == 'ADD' or instruction_type == 'SUB' or instruction_type == 'SLT':
         dest_register = next(iter(sim_glob.result_of_execution['dest'])) # fetch the destination register
         value = sim_glob.result_of_execution['dest'][dest_register] # get the value to be stored
         sim_glob.mem_result.update({dest_register:value}) # update the value for WB

@@ -43,4 +43,4 @@ def add_mem(a,b):
     return hex(temp)
 
 def SLT(a, b):
-    return int(a, 16) < int(b, 16)
+    return hex(int(int(a, 16) < int(b, 16)))[2:].rjust(8,'0')
