@@ -1,6 +1,6 @@
 .data
-n: .word 8
-numbers: .word 102 ,3 ,1 ,2 ,4 ,9 ,8 ,29
+n: .word 10
+numbers: .word 102, 3, 1, 5, 13, 16, 4, 10, 9, 11 
 	.text
 main:
 	LI $s7, 0x10010000				# load address of numbers into $s7
@@ -41,17 +41,3 @@ increment:
 	LI $s1, 0x00000000 						# reset s1 to 0
 
 	BNE  $s0, $s6, loop				# go back through loop with s1 = s1 + 1
-	
-print:
-	BEQ $t3, $t4, final				# if t3 = t4 go to final
-	
-	LOAD $t5, 0($s7)					# load from numbers
-	LI $t5, 0x00000004
-	ADD $s7, $s7, $t5				# increment through the numbers
-	LI $t5, 0x00000001
-    ADD $t3, $t3, 	$t5			# increment counter
-
-	JUMP print
-
-final:	
-	LI $v0, 0x0000000a						# end program

@@ -65,3 +65,4 @@ if __name__ == "__main__":
     print(f"List of stalled instructions {sim_glob.stalled_instructions}")
     #print(sim_glob.data_segment) uncomment this line to print the data segment
     print(sim_glob.registers)
+    print(sim_glob.data_segment)

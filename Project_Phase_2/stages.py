@@ -38,6 +38,7 @@ def IDRF(PC, clock):
     next_instruction = {}
     if bool(sim_glob.decoded_instr):
         # Stall
+        sim_glob.stalled_instructions.append(sim_glob.fetched_instr)
         next_instruction = {'IDRF': [PC, clock+1]}
 
     else:
@@ -204,7 +205,7 @@ def IDRF(PC, clock):
                             if "IF" not in sim_glob.queue[0].keys():
                                 sim_glob.queue = [{"IF":[0,0]}] + sim_glob.queue
                             sim_glob.queue[0]["IF"][0] = sim_glob.label_dict[label]    # Update the new PC of the IF instruction
-                            sim_glob.queue[0]["IF"][1] += 1        # Increase the clock by 1
+                            sim_glob.queue[0]["IF"][1] = clock + 1        # Increase the clock by 1
                         else:
                             pass # Nothing happens
                     elif op == "BNE":
@@ -214,7 +215,7 @@ def IDRF(PC, clock):
                             if "IF" not in sim_glob.queue[0].keys():
                                 sim_glob.queue = [{"IF":[0,0]}] + sim_glob.queue
                             sim_glob.queue[0]["IF"][0] = sim_glob.label_dict[label]    # Update the new PC of the IF instruction
-                            sim_glob.queue[0]["IF"][1] += 1        # Increase the clock by 1
+                            sim_glob.queue[0]["IF"][1] = clock + 1        # Increase the clock by 1
                         else:
                             pass # Nothing happens
             elif op == "JUMP":
@@ -223,7 +224,7 @@ def IDRF(PC, clock):
                 if "IF" not in sim_glob.queue[0].keys():
                     sim_glob.queue = [{"IF":[0,0]}] + sim_glob.queue
                 sim_glob.queue[0]["IF"][0] = sim_glob.label_dict[label]    # Update the new PC of the IF instruction
-                sim_glob.queue[0]["IF"][1] += 1        # Increase the clock by 1
+                sim_glob.queue[0]["IF"][1] = clock + 1        # Increase the clock by 1
                 next_instruction = {"EX": [PC, clock+1]}
         
         elif sim_glob.op_dict[op] == 7: # for load immediate instruction
@@ -300,8 +301,8 @@ def EX(PC, clock): # Depen reg just for store
         # Stall
         next_instruction = {'EX': [PC, clock+1]}
     else:
-        dec_instr = sim_glob.decoded_instr
-        sim_glob.result_of_execution = sim_glob.decoded_instr       # This will be passed on to memory
+        dec_instr = sim_glob.decoded_instr.copy()
+        sim_glob.result_of_execution = sim_glob.decoded_instr.copy()       # This will be passed on to memory
         sim_glob.decoded_instr = {}
         
         op = dec_instr["op"]
@@ -344,7 +345,7 @@ def EX(PC, clock): # Depen reg just for store
                             flag_src1 = 1
                             # The register is not empty
                             if sim_glob.que_reg[i].val != None:
-                                sim_glob.decoded_instr["dest"] = sim_glob.que_reg[i].val
+                                sim_glob.result_of_execution["dest"] = sim_glob.que_reg[i].val
                             else:  # There would be a stall
                                 next_instruction = {"EX": [PC, clock+1]}
                                 sim_glob.decoded_instr = dec_instr
