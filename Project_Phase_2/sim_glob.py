@@ -16,12 +16,13 @@ def initialize():
     global op_dict
     global latest_clock
     global stalled_instructions
+    global data_forwarding
     latest_clock = 0
     instructions = []  # list of the instructions read from the file
     label_dict = {}  # To store the indices of where the labels are occurring
     data_dict = {}  # storing the indices for data segment
     comments = {}
-
+    data_forwarding = True
     base_address = int("0x10010000", 16)  # address of the first byte
 
     registers = {'$zero': '00000000', '$at': '00000000', '$v0': '00000000', '$v1': '00000000',
@@ -33,7 +34,7 @@ def initialize():
                  '$t8': '00000000', '$t9': '00000000', '$k0': '00000000', '$k1': '00000000',
                  '$gp': '00000000', '$sp': '00000000', '$s8': '00000000', '$ra': '00000000', }
 
-    data_segment = ['00000000'] * 1024  # data segment (4 Kilobytes)
+    data_segment = ['00000000'] * 10  # data segment (4 Kilobytes)
     queue = []  # queue for storing stages of pipeline
     global que_reg
     que_reg = []  # list for keeping track of execution operations
@@ -43,7 +44,8 @@ def initialize():
     result_of_execution = {}
     mem_result = {}
     op_dict = {"ADD": 0, "SUB": 1, "BNE": 4,"BEQ" : 5,
-               "JUMP": 6, "LOAD": 2, "STORE": 3, "LI" : 7}
+               "JUMP": 6, "LOAD": 2, "STORE": 3, "LI" : 7,
+               }
     stalled_instructions = [] 
     '''
         OP CODES
