@@ -111,6 +111,7 @@ def IDRF(PC, clock):
             reg = fetch_reg(instr)
             # Check dependency
             flag_src1 = 0
+            flag_src2 = 0
             if len(sim_glob.que_reg) != 0:
                 sim_glob.decoded_instr["dest"] = {}
                 sim_glob.decoded_instr["dest"][reg[0]] = sim_glob.registers[reg[0]]
@@ -129,6 +130,19 @@ def IDRF(PC, clock):
                             sim_glob.fetched_instr = instr
                             sim_glob.decoded_instr = {}
                             break
+                    if op == "STORE" and sim_glob.data_forwarding == False:
+                        if reg[0] == sim_glob.que_reg[i].regi and flag_src1 == 0:
+                            flag_src2 = 1
+                            # The register is not empty
+                            next_instruction = {"EX": [PC, clock+1]}
+                            if sim_glob.que_reg[i].val != None:
+                                sim_glob.decoded_instr["src"][reg[1]] = sim_glob.que_reg[i].val
+                            else:  # There would be a stall
+                                sim_glob.stalled_instructions.append(instr)
+                                next_instruction = {"IDRF": [PC, clock+1]}
+                                sim_glob.fetched_instr = instr
+                                sim_glob.decoded_instr = {}
+                                break
                 else:  # If the for loop didn't break
                     # If flag_src1 wasn't triggered then they weren't dependent registers
                     if flag_src1 == 0:
