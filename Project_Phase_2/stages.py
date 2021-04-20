@@ -300,8 +300,8 @@ def EX(PC, clock): # Depen reg just for store
         # Stall
         next_instruction = {'EX': [PC, clock+1]}
     else:
-        dec_instr = sim_glob.decoded_instr
-        sim_glob.result_of_execution = sim_glob.decoded_instr       # This will be passed on to memory
+        dec_instr = sim_glob.decoded_instr.copy()
+        sim_glob.result_of_execution = sim_glob.decoded_instr.copy()       # This will be passed on to memory
         sim_glob.decoded_instr = {}
         
         op = dec_instr["op"]
