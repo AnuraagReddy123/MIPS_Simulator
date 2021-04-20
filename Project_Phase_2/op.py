@@ -41,3 +41,6 @@ def BEQ(a,b):
 def add_mem(a,b):
     temp = int(a,16) + int(b,16)
     return hex(temp)
+
+def SLT(a, b):
+    return int(a, 16) < int(b, 16)

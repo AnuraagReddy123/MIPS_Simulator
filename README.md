@@ -56,3 +56,38 @@ Some **Warnings**
 - bubblesort.s is made according to our instruction set
 - **Please change the value of n in the bubblesort.js to change how many numbers will be present in the array**
 - Errors are not handled yet
+
+
+## Phase 2
+
+We have incorporated pipeline into our simulator in the second phase of our simulator. We have followed the MIPS
+pipeline consisting of six stages: Instruction Fetch(IF), Instruction Decode and Register Fetch(IDRF),Execution(EX),
+Memory(MEM) and Write Back(WB). The pipeline has only been incorporated for few instructions right now: 
+- ADD
+- SUB
+- LOAD
+- STORE
+- BNE
+- BEQ
+- JUMP
+
+An assembly code written using above instructions can be run on our simulator. The program first asks the user if
+the program be executed wit or without forwarding. Once, the user enter the choice, the program is run and at the end
+of the program, the following information is provided:
+1. Registers List
+2. Data Segment
+3. IPC (Instructions per Cycle) upto 3 decimal places
+4. Number of stalls
+5. Number of cycles executed
+6. The list of stalled instructions
+
+We have assumed that each stage of the pipeline takes one cycle to complete. For incorporating the pipeline, we have
+used a queue in the form of a list. The clock cycle is updated in the WB stage of every instruction. The dependencies
+between instructions are checked in IDRF stage. For a branch instruction, we have assumed that the branch will not be taken
+and the branch result is known in IDRF stage. So, if we find out that branch is taken , we issue a new instruction fetch 
+in the next cycle and a stall occurs. Rest of the instructions also follow the pipeline along similar lines of MIPS
+architecture.
+### How to run:
+The program can be run from the main.py file in the PROJECT_PHASE_2 folder. A couple of test files written in MIPS are also
+available to test the simulator.To print the data segment which is huge, one can uncomment the commented line in line 66 
+in main.py file. 
