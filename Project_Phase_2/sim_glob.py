@@ -1,5 +1,3 @@
-
-
 def initialize():
     global instructions
     global label_dict

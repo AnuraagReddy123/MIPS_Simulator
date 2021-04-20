@@ -344,7 +344,7 @@ def EX(PC, clock): # Depen reg just for store
                             flag_src1 = 1
                             # The register is not empty
                             if sim_glob.que_reg[i].val != None:
-                                sim_glob.decoded_instr["dest"] = sim_glob.que_reg[i].val
+                                sim_glob.result_of_execution["dest"] = sim_glob.que_reg[i].val
                             else:  # There would be a stall
                                 next_instruction = {"EX": [PC, clock+1]}
                                 sim_glob.decoded_instr = dec_instr
