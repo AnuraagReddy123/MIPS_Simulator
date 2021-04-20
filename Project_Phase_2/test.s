@@ -1,17 +1,18 @@
 .data
-n: .word 10
+n: .word 8
 numbers: .word 102 ,3 ,1 ,2 ,4 ,9 ,8 ,29
 	.text
 main:
 	LI $s7, 0x10010000				# load address of numbers into $s7
 
-	LI $s0, 0						# initialize counter 1 for loop 1
+	LI $s0, 0x00000000						# initialize counter 1 for loop 1
 	LOAD $s6, 0($s7)						# n
 input: 
+	LOAD $s6, 0($s7)						# n
 	LI $s7,0x10010004
 	LI $t7, 0x00000001
-        SUB $s6,$s6,$t7
-	LI $s1, 0 						# initialize counter 2 for loop 2
+	SUB $s6,$s6,$t7
+	LI $s1, 0x00000000 						# initialize counter 2 for loop 2
 
 	LI $t3, 0x00000000						# initialize counter for printing
 	LI $t4, 0x0000000a
@@ -25,19 +26,19 @@ loop:
 	LOAD $t1, 4($t7) 					# load numbers[j+1]
 
 	SLT $t2, $t0, $t1				# if t0 < t1
-	BNE $t2, $zero, increment
+	BNE $t2, $ze, increment
 
-	SW $t1, 0($t7) 					# swap
-	SW $t0, 4($t7)
+	STORE $t1, 0($t7) 					# swap
+	STORE $t0, 4($t7)
 
 increment:	
-        LI $t5, 0x00000001
+    LI $t5, 0x00000001
 	ADD $s1, $s1, $t5				# increment t1
 	SUB $s5, $s6, $s0 				# subtract s0 from s6
 
 	BNE  $s1, $s5, loop				# if s1 (counter for second loop) does not equal 9, loop
 	ADD $s0, $s0, $t5				# otherwise add 1 to s0
-	LI $s1, 0 						# reset s1 to 0
+	LI $s1, 0x00000000 						# reset s1 to 0
 
 	BNE  $s0, $s6, loop				# go back through loop with s1 = s1 + 1
 	
@@ -48,9 +49,9 @@ print:
 	LI $t5, 0x00000004
 	ADD $s7, $s7, $t5				# increment through the numbers
 	LI $t5, 0x00000001
-        ADD $t3, $t3, 	$t5			# increment counter
+    ADD $t3, $t3, 	$t5			# increment counter
 
 	JUMP print
 
 final:	
-	LI $v0, 10						# end program
+	LI $v0, 0x0000000a						# end program
