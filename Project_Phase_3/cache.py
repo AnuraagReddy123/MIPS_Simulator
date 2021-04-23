@@ -1,4 +1,7 @@
 import math
+import sim_glob
+
+
 class Block:
     # valid bit
     # lru
@@ -9,6 +12,7 @@ class Block:
     # Store memory
 
     def __init__(self,blockSize):
+        self.validBit = 0
         self.blockSize = blockSize
         self.block = [] # declare empty list for storing the tags later
         pass
@@ -17,7 +21,16 @@ class Block:
         self.block.clear() # clear up the block to store the new addresses
         for i in range(self.blockSize): # referring to every byte the block will store
             self.block.append(tag) # store the tag bits into the list
+        self.validBit = 1
     pass
+
+    def searchAddress(self,address,numOfSets):
+        offset = math.log2(self.blockSize) # get the number of off set bits
+        tag = address[:32-numOfSets-offset] # get the tag bits of the address
+        if not self.block or self.block[0] != tag:
+            return None # if the block was empty or the block doesn't have the required tag
+        index = int(address,2) - sim_glob.base_address # fetch the index in the memory segment
+        return sim_glob.data_segment[index] # return the contents of the memory at the index
 
 class Set:
     # Number of blocks
