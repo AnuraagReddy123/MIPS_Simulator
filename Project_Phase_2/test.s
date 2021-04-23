@@ -1,6 +1,6 @@
 .data
 n: .word 10
-numbers: .word 102, 3, 1, 5, 13, 16, 4, 10, 9, 11 
+numbers: .word -1, 3, 1, 5, 13, 16, 4, 10, 9, 11 
 	.text
 main:
 	LI $s7, 0x10010000				# load address of numbers into $s7

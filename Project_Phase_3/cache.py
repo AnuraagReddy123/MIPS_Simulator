@@ -1,3 +1,4 @@
+import math
 class Block:
     # valid bit
     # lru
@@ -6,6 +7,16 @@ class Block:
     # Function
     # Find Data
     # Store memory
+
+    def __init__(self,blockSize):
+        self.blockSize = blockSize
+        self.block = [] # declare empty list for storing the tags later
+        pass
+
+    def storeAddresses(self,tag):
+        self.block.clear() # clear up the block to store the new addresses
+        for i in range(self.blockSize): # referring to every byte the block will store
+            self.block.append(tag) # store the tag bits into the list
     pass
 
 class Set:

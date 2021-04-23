@@ -32,7 +32,7 @@ def initialize():
                  '$t8': '00000000', '$t9': '00000000', '$k0': '00000000', '$k1': '00000000',
                  '$gp': '00000000', '$sp': '00000000', '$s8': '00000000', '$ra': '00000000', }
 
-    data_segment = ['00000000'] * 10  # data segment (4 Kilobytes)
+    data_segment = ['00000000'] * 20  # data segment (4 Kilobytes)
     queue = []  # queue for storing stages of pipeline
     global que_reg
     que_reg = []  # list for keeping track of execution operations
