@@ -15,14 +15,12 @@ class Block:
         self.validBit = 0
         self.blockSize = blockSize
         self.block = [] # declare empty list for storing the tags later
-        pass
 
     def storeAddresses(self,tag):
         self.block.clear() # clear up the block to store the new addresses
         for i in range(self.blockSize): # referring to every byte the block will store
             self.block.append(tag) # store the tag bits into the list
         self.validBit = 1
-    pass
 
     def searchAddress(self,address,numOfSets):
         offset = math.log2(self.blockSize) # get the number of off set bits
@@ -35,17 +33,23 @@ class Block:
 class Set:
     # Number of blocks
     # List of block objects
+    # Associativity
 
-    def __init__(self, numBlocks):
-        self.numBlocks = numBlocks
-        self.blocks = []
-    
-    def findBlock (addr):
-        
-        
-        pass
-    # Function
-    # Find Block
+    def __init__(self, numBlocks, assoc, blockSize, numOfSets):
+        self.__numBlocks = numBlocks
+        self.__assoc = assoc
+        self.__blocks = []
+        self.__numOfSets = numOfSets
+        for i in range(assoc):
+            self.blocks.append(Block(blockSize))
+
+    def findBlock (self, addr):
+        offset = math.log2(self.__blocks[0].blockSize) # get the number of off set bits
+        tag = addr[:32-self.__numOfSets-offset] # get the tag bits of the address
+        for i in range(self.__blocks):
+            if tag == self.__blocks[i].block[0]:
+                return self.__blocks[i]
+        return None
 
     pass
 
