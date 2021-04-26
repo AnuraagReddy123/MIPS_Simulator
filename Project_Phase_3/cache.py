@@ -39,7 +39,7 @@ class Set:
         self.__blocks = []
         self.__numOfSets = numOfSets
         for i in range(self.__numOfBlksInSet):
-            self.blocks.append(Block(blockSize, 0))
+            self.blocks.append(Block(blockSize))
 
     def findBlock (self, addr):
         offset = math.log2(self.__blocks[0].blockSize) # get the number of off set bits
