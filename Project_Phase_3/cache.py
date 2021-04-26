@@ -1,5 +1,6 @@
 import math
 import sim_glob
+import sys
 
 class Block:
     # valid bit
@@ -39,7 +40,7 @@ class Set:
         self.__blocks = []
         self.__numOfSets = numOfSets
         for i in range(self.__numOfBlksInSet):
-            self.blocks.append(Block(blockSize))
+            self.blocks.append(Block(blockSize, 0))
 
     def findBlock (self, addr):
         offset = math.log2(self.__blocks[0].blockSize) # get the number of off set bits
@@ -55,6 +56,15 @@ class Set:
             if max < blk.lru:
                 max = blk.lru
         block.lru = self.findMaxLRU+1
+
+    def replaceBlock(self, block):
+        # Find min lru
+        min = sys.maxsize
+        for blk in self.__blocks:
+            if min > blk.lru:
+                min = blk.lru
+    
+        
             
 class Cache:
     # Number of sets
