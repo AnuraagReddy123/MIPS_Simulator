@@ -11,22 +11,22 @@ class Block:
     # Find Data
     # Store memory
 
-    def __init__(self,blockSize):
+    def __init__(self,blockSize,lru,tag):
         self.validBit = 0
         self.blockSize = blockSize
-        self.block = [] # declare empty list for storing the tags later
+        self.lru = lru # store the lru bits
+        self.tag = None # empty block
 
-    def storeAddresses(self,tag):
-        self.block.clear() # clear up the block to store the new addresses
-        for i in range(self.blockSize): # referring to every byte the block will store
-            self.block.append(tag) # store the tag bits into the list
-        self.validBit = 1
+    def storeAddresses(self,tag,lru):
+        self.tag = tag # store the tag bits
+        self.lru = lru # store the lru bit
 
-    def searchAddress(self,address,numOfSets):
+    def searchAddress(self,address,indexBits,lru):
         offset = math.log2(self.blockSize) # get the number of off set bits
-        tag = address[:32-numOfSets-offset] # get the tag bits of the address
-        if not self.block or self.block[0] != tag:
+        tag = address[:32-indexBits-offset] # get the tag bits of the address
+        if self.tag == None or self.tag != tag:
             return None # if the block was empty or the block doesn't have the required tag
+        self.lru = lru # update the lru bit
         index = int(address,2) - sim_glob.base_address # fetch the index in the memory segment
         return sim_glob.data_segment[index] # return the contents of the memory at the index
 
