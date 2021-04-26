@@ -10,10 +10,11 @@ class Block:
     # Find Data
     # Store memory
 
-    def __init__(self,blockSize):
+    def __init__(self,blockSize,lru = None,tag = None):
         self.validBit = 0
         self.blockSize = blockSize
-        self.tag = None # empty block
+        self.tag = tag # empty block
+        self.lru = lru # not valid yet
 
     def storeAddresses(self,tag,lru):
         self.tag = tag # store the tag bits
@@ -60,9 +61,9 @@ class Cache:
 
     # Functions
     # extractSetIndex
-    def __init__(self,blockSize,associativity,numofBlocks):
+    def __init__(self,blockSize,associativity,cacheSize):
         self.blockSize = blockSize # set the blocksize
-        self.numofBlocks = numofBlocks # get the number of blocks in the cache
+        self.numofBlocks =  cacheSize // blockSize # get the number of blocks in the cache
         self.associativity = associativity # set the associativity
         self.offset = math.log2(self.blockSize) # get the number of off set bits
         numberofSets = self.numofBlocks/self.associativity # get the number of sets
