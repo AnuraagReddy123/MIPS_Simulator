@@ -11,22 +11,21 @@ class Block:
     # Find Data
     # Store memory
 
-    def __init__(self,blockSize,lru):
+    def __init__(self,blockSize,lru = None,tag = None):
         self.validBit = 0
         self.blockSize = blockSize
-        self.lru = lru # store the lru bits
-        self.tag = None # empty block
+        self.tag = tag # empty block
+        self.lru = lru # not valid yet
 
     def storeAddresses(self,tag,lru):
         self.tag = tag # store the tag bits
         self.lru = lru # store the lru bit
 
-    def searchAddress(self,address,indexBits,lru):
+    def searchAddress(self,address,indexBits):
         offset = math.log2(self.blockSize) # get the number of off set bits
         tag = address[:32-indexBits-offset] # get the tag bits of the address
         if self.tag == None or self.tag != tag:
             return None # if the block was empty or the block doesn't have the required tag
-        self.lru = lru # update the lru bit
         index = int(address,2) - sim_glob.base_address # fetch the index in the memory segment
         return sim_glob.data_segment[index] # return the contents of the memory at the index
 
@@ -72,6 +71,35 @@ class Cache:
 
     # Functions
     # extractSetIndex
+    def __init__(self,blockSize,associativity,cacheSize):
+        self.blockSize = blockSize # set the blocksize
+        self.numofBlocks =  cacheSize // blockSize # get the number of blocks in the cache
+        self.associativity = associativity # set the associativity
+        self.offset = math.log2(self.blockSize) # get the number of off set bits
+        numberofSets = self.numofBlocks/self.associativity # get the number of sets
+        self.indexBits = math.log2(numberofSets) # get the number of indexBits
+        self.tagBits = 32 - self.indexBits - self.offset # get the number of tag bits in the cache
+        self.sets = [Set(self.numofBlocks,self.blockSize,numberofSets) for i in range(numberofSets)] # make a list of sets
+
+    def extractSetIndex(self,address):
+        index = address[self.tagBits:self.tagBits+self.indexBits] # get the indexBits of the address
+        return index 
+
+    def access(self,address):
+        setNumber = self.extractSetIndex(address) # get the set number
+        block = self.sets[setNumber].findBlock(address) # find the block
+        if block != None:
+            self.sets[setNumber].updateLRU(block)
+            return block.searchAddress(address,self.indexBits) # return the data
+        return None # if its a cache miss
+
+    def replaceBlock(self,address):
+        index = self.extractSetIndex(address) # get the index of the set
+        block = Block(self.blockSize,0) # the block to be replaced
+        tag = address[:self.tagBits] # get the tag bits for the new block
+        block.storeAddresses(tag,0) # make the new block with lru as 0
+        self.sets[index].replaceBlock(block) # replace the least recently block in the set
+
     '''
     char *access (int64_t addr)
     {
