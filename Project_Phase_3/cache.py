@@ -10,10 +10,9 @@ class Block:
     # Find Data
     # Store memory
 
-    def __init__(self,blockSize,lru):
+    def __init__(self,blockSize):
         self.validBit = 0
         self.blockSize = blockSize
-        self.lru = lru # store the lru bits
         self.tag = None # empty block
 
     def storeAddresses(self,tag,lru):
@@ -82,6 +81,13 @@ class Cache:
             self.sets[setNumber].updateLRU(block)
             return block.searchAddress(address,self.indexBits) # return the data
         return None # if its a cache miss
+
+    def replaceBlock(self,address):
+        index = self.extractSetIndex(address) # get the index of the set
+        block = Block(self.blockSize,0) # the block to be replaced
+        tag = address[:self.tagBits] # get the tag bits for the new block
+        block.storeAddresses(tag,0) # make the new block with lru as 0
+        self.sets[index].replaceBlock(block) # replace the least recently block in the set
 
     '''
     char *access (int64_t addr)
