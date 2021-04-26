@@ -1,7 +1,6 @@
 import math
 import sim_glob
 
-
 class Block:
     # valid bit
     # lru
@@ -11,7 +10,7 @@ class Block:
     # Find Data
     # Store memory
 
-    def __init__(self,blockSize,lru,tag):
+    def __init__(self,blockSize,lru):
         self.validBit = 0
         self.blockSize = blockSize
         self.lru = lru # store the lru bits
@@ -45,17 +44,18 @@ class Set:
     def findBlock (self, addr):
         offset = math.log2(self.__blocks[0].blockSize) # get the number of off set bits
         tag = addr[:32-self.__numOfSets-offset] # get the tag bits of the address
-        for i in range(self.__blocks):
+        for i in range(len(self.__blocks)):
             if tag == self.__blocks[i].block[0]:
                 return self.__blocks[i]
-            else:
-                # Replace by lru
-                pass
         return None
 
     def updateLRU (self, block):
-        pass
-
+        max = 0
+        for blk in self.__blocks:
+            if max < blk.lru:
+                max = blk.lru
+        block.lru = self.findMaxLRU+1
+            
 class Cache:
     # Number of sets
     # List of set objects
@@ -129,7 +129,7 @@ A(1) B(2) NULL NULL
 A(1) B(2) C(3) NULL
 A(1) B(2) C(3) D(4)
 A(5) B(2) C(3) D(4)
-
+A(5) E(6) C(3) D(4)
 
 0x10010004
 
