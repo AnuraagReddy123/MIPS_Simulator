@@ -43,4 +43,13 @@ def add_mem(a,b):
     return hex(temp)
 
 def SLT(a, b):
-    return hex(int(int(a, 16) < int(b, 16)))[2:].rjust(8,'0')
+    first_number = int(a,16)
+    second_number = int(b,16)
+    if a[0] >= '8':
+        temp = int(find_2s_complement(int(a,16)),16)
+        first_number = int(find_2s_complement(temp),16)
+        first_number = -temp
+    if b[0] >= '8':
+        temp = int(find_2s_complement(int(b,16)),16)
+        second_number = -temp
+    return hex(int(first_number < second_number))[2:].rjust(8,'0')
