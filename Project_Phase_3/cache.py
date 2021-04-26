@@ -34,18 +34,18 @@ class Set:
     # List of block objects
     # Associativity
 
-    def __init__(self, numOfBlksInSet, blockSize, numOfSets):
+    def __init__(self, numOfBlksInSet, blockSize, indexBits):
         self.__numOfBlksInSet = numOfBlksInSet
         self.__blocks = []
-        self.__numOfSets = numOfSets
+        self.__indexBits = indexBits
         for i in range(self.__numOfBlksInSet):
             self.blocks.append(Block(blockSize))
 
     def findBlock (self, addr):
         offset = math.log2(self.__blocks[0].blockSize) # get the number of off set bits
-        tag = addr[:32-self.__numOfSets-offset] # get the tag bits of the address
+        tag = addr[:32-self.__indexBits-offset] # get the tag bits of the address
         for i in range(len(self.__blocks)):
-            if tag == self.__blocks[i].block[0]:
+            if tag == self.__blocks[i].tag:
                 return self.__blocks[i]
         return None
 
@@ -80,7 +80,7 @@ class Cache:
         numberofSets = self.numofBlocks/self.associativity # get the number of sets
         self.indexBits = math.log2(numberofSets) # get the number of indexBits
         self.tagBits = 32 - self.indexBits - self.offset # get the number of tag bits in the cache
-        self.sets = [Set(self.numofBlocks,self.blockSize,numberofSets) for i in range(numberofSets)] # make a list of sets
+        self.sets = [Set(self.numofBlocks,self.blockSize,self.indexBits) for i in range(numberofSets)] # make a list of sets
 
     def extractSetIndex(self,address):
         index = address[self.tagBits:self.tagBits+self.indexBits] # get the indexBits of the address
