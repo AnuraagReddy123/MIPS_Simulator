@@ -54,15 +54,16 @@ class Set:
         for blk in self.__blocks:
             if max < blk.lru:
                 max = blk.lru
-        block.lru = self.findMaxLRU+1
+        block.lru = max+1
 
     def replaceBlock(self, block):
         # Find min lru
-        min = sys.maxsize
-        for blk in self.__blocks:
-            if min > blk.lru:
-                min = blk.lru
-    
+        min = 0
+        for i in range(len(self.__blocks)):
+            if self.__blocks[min].lru > self.__blocks[i]:
+                min = i
+        self.__blocks[min] = block # Replace that block with given block
+        self.updateLRU(self.__blocks[min])
         
             
 class Cache:
@@ -99,22 +100,6 @@ class Cache:
         tag = address[:self.tagBits] # get the tag bits for the new block
         block.storeAddresses(tag,0) # make the new block with lru as 0
         self.sets[index].replaceBlock(block) # replace the least recently block in the set
-
-    '''
-    char *access (int64_t addr)
-    {
-        int setNo = extractSetIndex(addr);
-        Block *blk = sets[setNo].findBlock(addr)
-        if (blk != nullptr)
-        {
-            sets[setNo].updateLRU(blk);
-            return blk->data;
-        }
-        return nullptr;
-    }
-    '''
-    pass
-
 
 '''
 
