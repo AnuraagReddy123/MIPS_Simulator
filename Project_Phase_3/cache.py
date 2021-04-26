@@ -35,12 +35,11 @@ class Set:
     # List of block objects
     # Associativity
 
-    def __init__(self, numBlocks, assoc, blockSize, numOfSets):
-        self.__numBlocks = numBlocks
-        self.__assoc = assoc
+    def __init__(self, numOfBlksInSet, blockSize, numOfSets):
+        self.__numOfBlksInSet = numOfBlksInSet
         self.__blocks = []
         self.__numOfSets = numOfSets
-        for i in range(assoc):
+        for i in range(self.__numOfBlksInSet):
             self.blocks.append(Block(blockSize))
 
     def findBlock (self, addr):
@@ -49,15 +48,33 @@ class Set:
         for i in range(self.__blocks):
             if tag == self.__blocks[i].block[0]:
                 return self.__blocks[i]
+            else:
+                # Replace by lru
+                pass
         return None
 
-    pass
+    def updateLRU (self, block):
+        pass
 
 class Cache:
     # Number of sets
     # List of set objects
 
-
+    # Functions
+    # extractSetIndex
+    '''
+    char *access (int64_t addr)
+    {
+        int setNo = extractSetIndex(addr);
+        Block *blk = sets[setNo].findBlock(addr)
+        if (blk != nullptr)
+        {
+            sets[setNo].updateLRU(blk);
+            return blk->data;
+        }
+        return nullptr;
+    }
+    '''
     pass
 
 
