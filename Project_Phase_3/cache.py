@@ -80,7 +80,8 @@ class Cache:
         numberofSets = self.numofBlocks/self.associativity # get the number of sets
         self.indexBits = math.log2(numberofSets) # get the number of indexBits
         self.tagBits = 32 - self.indexBits - self.offset # get the number of tag bits in the cache
-        self.sets = [Set(self.numofBlocks,self.blockSize,self.indexBits) for i in range(numberofSets)] # make a list of sets
+
+        self.sets = [Set(self.numofBlocks,self.blockSize,math.bin(i).rjust(self.indexBits,'0')) for i in range(numberofSets)] # make a list of sets
 
     def extractSetIndex(self,address):
         index = address[self.tagBits:self.tagBits+self.indexBits] # get the indexBits of the address
@@ -100,6 +101,12 @@ class Cache:
         tag = address[:self.tagBits] # get the tag bits for the new block
         block.storeAddresses(tag,0) # make the new block with lru as 0
         self.sets[index].replaceBlock(block) # replace the least recently block in the set
+
+    def removeBlock(self,address):
+        index = self.extractSetIndex(address) # get the index of the set
+        block = Block(self.blockSize,0) # the block to be replaced
+        block.storeAddresses(None,0) # make the new block with invalid tag
+        self.sets[index].replaceBlock(block) # invalidate the block in the set
 
 '''
 
