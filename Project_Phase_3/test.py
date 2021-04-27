@@ -28,3 +28,4 @@ d = '123'
 e = c + d + '0'*5
 print(e)
 print(b)
+print(d)

@@ -114,7 +114,6 @@ class Cache:
         self.sets[index].replaceBlock(block) # invalidate the block in the set
 
 '''
-
 li $v0, 4
 
 
