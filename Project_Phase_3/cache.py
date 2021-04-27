@@ -80,7 +80,9 @@ class Cache:
         numberofSets = self.numofBlocks/self.associativity # get the number of sets
         self.indexBits = math.log2(numberofSets) # get the number of indexBits
         self.tagBits = 32 - self.indexBits - self.offset # get the number of tag bits in the cache
+
         self.sets = [Set(self.numofBlocks,self.blockSize,math.bin(i).rjust(self.indexBits,'0')) for i in range(numberofSets)] # make a list of sets
+
     def extractSetIndex(self,address):
         index = address[self.tagBits:self.tagBits+self.indexBits] # get the indexBits of the address
         return index 

@@ -1,3 +1,4 @@
+import sys
 class Hello:
     def __init__(self):
         self.name = "anuraag"
@@ -16,3 +17,4 @@ class People:
 
 a = People()
 a.wave()
+print(sys.maxsize)
