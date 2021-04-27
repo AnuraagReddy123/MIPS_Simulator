@@ -103,11 +103,12 @@ class Cache:
         return None # if its a cache miss
 
     def replaceBlock(self,address):
-        address = bin(int(address,16))[2:] # get the same address in binary
-        # print(address)
+        address = bin(int(address,16))[2:].rjust(32,'0') # get the same address in binary
+        print(address)
         index = self.extractSetIndex(address) # get the index of the set
         block = Block(self.blockSize,0) # the block to be replaced
         tag = address[:self.tagBits] # get the tag bits for the new block
+        print(tag)
         block.storeAddresses(tag,0) # make the new block with lru as 0
         self.sets[index].replaceBlock(block) # replace the least recently block in the set
 
