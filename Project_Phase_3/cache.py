@@ -38,7 +38,7 @@ class Set:
         self.__numOfBlksInSet = numOfBlksInSet
         self.__blocks = []
         self.__indexBits = indexBits
-        for i in range(self.__numOfBlksInSet):
+        for i in range(self.__numOfBlksInSet):  
             self.blocks.append(Block(blockSize))
 
     def findBlock (self, addr):
@@ -59,13 +59,15 @@ class Set:
     def replaceBlock(self, block):
         # Find min lru
         min = 0
+        temp = Block(self.__blocks[0].blockSize)
         for i in range(len(self.__blocks)):
             if self.__blocks[min].lru > self.__blocks[i]:
                 min = i
+        temp = self.__blocks[min] = temp
         self.__blocks[min] = block # Replace that block with given block
-        self.updateLRU(self.__blocks[min])
+        self.updateLRU(self.__blocks[min])        
         
-            
+
 class Cache:
     # Number of sets
     # List of set objects
