@@ -39,7 +39,7 @@ class Set:
         self.__blocks = []
         self.__indexBits = indexBits
         for i in range(self.__numOfBlksInSet):  
-            self.blocks.append(Block(blockSize))
+            self.__blocks.append(Block(blockSize))
 
     def findBlock (self, addr):
         offset = math.log2(self.__blocks[0].blockSize) # get the number of off set bits
@@ -81,12 +81,12 @@ class Cache:
         self.blockSize = blockSize # set the blocksize
         self.numofBlocks =  cacheSize // blockSize # get the number of blocks in the cache
         self.associativity = associativity # set the associativity
-        self.offset = math.log2(self.blockSize) # get the number of off set bits
-        numberofSets = self.numofBlocks/self.associativity # get the number of sets
-        self.indexBits = math.log2(numberofSets) # get the number of indexBits
+        self.offset = int(math.log2(self.blockSize)) # get the number of off set bits
+        numberofSets = self.numofBlocks//self.associativity # get the number of sets
+        self.indexBits = int(math.log2(numberofSets)) # get the number of indexBits
         self.tagBits = 32 - self.indexBits - self.offset # get the number of tag bits in the cache
 
-        self.sets = [Set(self.numofBlocks,self.blockSize,math.bin(i).rjust(self.indexBits,'0')) for i in range(numberofSets)] # make a list of sets
+        self.sets = [Set(self.numofBlocks,self.blockSize,bin(i).rjust(self.indexBits,'0')) for i in range(numberofSets)] # make a list of sets
 
     def extractSetIndex(self,address):
         index = address[self.tagBits:self.tagBits+self.indexBits] # get the indexBits of the address
@@ -112,6 +112,25 @@ class Cache:
         block = Block(self.blockSize,0) # the block to be replaced
         block.storeAddresses(None,0) # make the new block with invalid tag
         self.sets[index].replaceBlock(block) # invalidate the block in the set
+
+
+
+if __name__ == "__main__":
+    addr = '0x10010004'
+    l1 = Cache(8, 2, 32)
+    l2 = Cache(8, 4, 128)
+
+   
+    if l1.access(addr) == None:
+        l1.replaceBlock(addr)
+    
+    data = l1.access(addr)
+
+
+
+
+
+
 
 '''
 li $v0, 4
