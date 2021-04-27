@@ -11,7 +11,7 @@ class Block:
     # Find Data
     # Store memory
 
-    def __init__(self,blockSize,lru = None,tag = None):
+    def __init__(self,blockSize,lru = 0,tag = None):
         self.validBit = 0
         self.blockSize = blockSize
         self.tag = tag # empty block
@@ -42,7 +42,7 @@ class Set:
             self.__blocks.append(Block(blockSize))
 
     def findBlock (self, addr):
-        offset = math.log2(self.__blocks[0].blockSize) # get the number of off set bits
+        offset = int(math.log2(self.__blocks[0].blockSize)) # get the number of off set bits
         tag = addr[:32-len(self.__indexBits)-offset] # get the tag bits of the address
         for i in range(len(self.__blocks)):
             if tag == self.__blocks[i].tag:
@@ -60,12 +60,12 @@ class Set:
         # Find min lru
         min = 0
         for i in range(len(self.__blocks)):
-            if self.__blocks[min].lru > self.__blocks[i]:
+            if self.__blocks[min].lru > self.__blocks[i].lru:
                 min = i
         temp = self.__blocks[min]
         self.__blocks[min] = block # Replace that block with given block
         self.updateLRU(self.__blocks[min])   
-        offset = math.log2(self.__blocks[0].blockSize)     
+        offset = int(math.log2(self.__blocks[0].blockSize))     
         if temp.tag == None:
             return None
         else:
@@ -86,7 +86,7 @@ class Cache:
         self.indexBits = int(math.log2(numberofSets)) # get the number of indexBits
         self.tagBits = 32 - self.indexBits - self.offset # get the number of tag bits in the cache
 
-        self.sets = [Set(self.numofBlocks,self.blockSize,bin(i).rjust(self.indexBits,'0')) for i in range(numberofSets)] # make a list of sets
+        self.sets = [Set(self.associativity,self.blockSize,bin(i).rjust(self.indexBits,'0')) for i in range(numberofSets)] # make a list of sets
 
     def extractSetIndex(self,address):
         # print(address)
@@ -130,7 +130,7 @@ if __name__ == "__main__":
     
     data = l1.access(addr)
 
-
+    print(data)
 
 
 
