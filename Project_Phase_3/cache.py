@@ -1,5 +1,6 @@
 import math
 import sim_glob
+import sys
 
 class Block:
     # valid bit
@@ -33,18 +34,18 @@ class Set:
     # List of block objects
     # Associativity
 
-    def __init__(self, numOfBlksInSet, blockSize, numOfSets):
+    def __init__(self, numOfBlksInSet, blockSize, indexBits):
         self.__numOfBlksInSet = numOfBlksInSet
         self.__blocks = []
-        self.__numOfSets = numOfSets
+        self.__indexBits = indexBits
         for i in range(self.__numOfBlksInSet):
             self.blocks.append(Block(blockSize))
 
     def findBlock (self, addr):
         offset = math.log2(self.__blocks[0].blockSize) # get the number of off set bits
-        tag = addr[:32-self.__numOfSets-offset] # get the tag bits of the address
+        tag = addr[:32-self.__indexBits-offset] # get the tag bits of the address
         for i in range(len(self.__blocks)):
-            if tag == self.__blocks[i].block[0]:
+            if tag == self.__blocks[i].tag:
                 return self.__blocks[i]
         return None
 
@@ -53,7 +54,17 @@ class Set:
         for blk in self.__blocks:
             if max < blk.lru:
                 max = blk.lru
-        block.lru = self.findMaxLRU+1
+        block.lru = max+1
+
+    def replaceBlock(self, block):
+        # Find min lru
+        min = 0
+        for i in range(len(self.__blocks)):
+            if self.__blocks[min].lru > self.__blocks[i]:
+                min = i
+        self.__blocks[min] = block # Replace that block with given block
+        self.updateLRU(self.__blocks[min])
+        
             
 class Cache:
     # Number of sets
@@ -69,8 +80,7 @@ class Cache:
         numberofSets = self.numofBlocks/self.associativity # get the number of sets
         self.indexBits = math.log2(numberofSets) # get the number of indexBits
         self.tagBits = 32 - self.indexBits - self.offset # get the number of tag bits in the cache
-        self.sets = [Set(self.numofBlocks,self.blockSize,numberofSets) for i in range(numberofSets)] # make a list of sets
-
+        self.sets = [Set(self.numofBlocks,self.blockSize,math.bin(i).rjust(self.indexBits,'0')) for i in range(numberofSets)] # make a list of sets
     def extractSetIndex(self,address):
         index = address[self.tagBits:self.tagBits+self.indexBits] # get the indexBits of the address
         return index 
@@ -90,21 +100,11 @@ class Cache:
         block.storeAddresses(tag,0) # make the new block with lru as 0
         self.sets[index].replaceBlock(block) # replace the least recently block in the set
 
-    '''
-    char *access (int64_t addr)
-    {
-        int setNo = extractSetIndex(addr);
-        Block *blk = sets[setNo].findBlock(addr)
-        if (blk != nullptr)
-        {
-            sets[setNo].updateLRU(blk);
-            return blk->data;
-        }
-        return nullptr;
-    }
-    '''
-    pass
-
+    def removeBlock(self,address):
+        index = self.extractSetIndex(address) # get the index of the set
+        block = Block(self.blockSize,0) # the block to be replaced
+        block.storeAddresses(None,0) # make the new block with invalid tag
+        self.sets[index].replaceBlock(block) # invalidate the block in the set
 
 '''
 
