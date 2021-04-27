@@ -89,10 +89,12 @@ class Cache:
         self.sets = [Set(self.numofBlocks,self.blockSize,bin(i).rjust(self.indexBits,'0')) for i in range(numberofSets)] # make a list of sets
 
     def extractSetIndex(self,address):
-        index = address[self.tagBits:self.tagBits+self.indexBits] # get the indexBits of the address
+        # print(address)
+        index = int(address[self.tagBits:self.tagBits+self.indexBits],2) # get the indexBits of the address
         return index 
 
     def access(self,address):
+        address = bin(int(address,16))[2:] # get the same address in binary
         setNumber = self.extractSetIndex(address) # get the set number
         block = self.sets[setNumber].findBlock(address) # find the block
         if block != None:
@@ -101,6 +103,8 @@ class Cache:
         return None # if its a cache miss
 
     def replaceBlock(self,address):
+        address = bin(int(address,16))[2:] # get the same address in binary
+        # print(address)
         index = self.extractSetIndex(address) # get the index of the set
         block = Block(self.blockSize,0) # the block to be replaced
         tag = address[:self.tagBits] # get the tag bits for the new block
