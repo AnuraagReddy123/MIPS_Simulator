@@ -43,7 +43,7 @@ class Set:
 
     def findBlock (self, addr):
         offset = math.log2(self.__blocks[0].blockSize) # get the number of off set bits
-        tag = addr[:32-self.__indexBits-offset] # get the tag bits of the address
+        tag = addr[:32-len(self.__indexBits)-offset] # get the tag bits of the address
         for i in range(len(self.__blocks)):
             if tag == self.__blocks[i].tag:
                 return self.__blocks[i]
@@ -59,14 +59,17 @@ class Set:
     def replaceBlock(self, block):
         # Find min lru
         min = 0
-        temp = Block(self.__blocks[0].blockSize)
         for i in range(len(self.__blocks)):
             if self.__blocks[min].lru > self.__blocks[i]:
                 min = i
-        temp = self.__blocks[min] = temp
+        temp = self.__blocks[min]
         self.__blocks[min] = block # Replace that block with given block
-        self.updateLRU(self.__blocks[min])        
-        
+        self.updateLRU(self.__blocks[min])   
+        offset = math.log2(self.__blocks[0].blockSize)     
+        if temp.tag == None:
+            return None
+        else:
+            return temp.tag + self.__indexBits + '0'*offset
 
 class Cache:
     # Number of sets
