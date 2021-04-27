@@ -22,7 +22,7 @@ class Block:
         self.lru = lru # store the lru bit
 
     def searchAddress(self,address,indexBits):
-        offset = math.log2(self.blockSize) # get the number of off set bits
+        offset = int(math.log2(self.blockSize)) # get the number of off set bits
         tag = address[:32-indexBits-offset] # get the tag bits of the address
         if self.tag == None or self.tag != tag:
             return None # if the block was empty or the block doesn't have the required tag
@@ -44,6 +44,7 @@ class Set:
     def findBlock (self, addr):
         offset = int(math.log2(self.__blocks[0].blockSize)) # get the number of off set bits
         tag = addr[:32-len(self.__indexBits)-offset] # get the tag bits of the address
+        print(self.__indexBits)
         for i in range(len(self.__blocks)):
             if tag == self.__blocks[i].tag:
                 return self.__blocks[i]
@@ -85,8 +86,7 @@ class Cache:
         numberofSets = self.numofBlocks//self.associativity # get the number of sets
         self.indexBits = int(math.log2(numberofSets)) # get the number of indexBits
         self.tagBits = 32 - self.indexBits - self.offset # get the number of tag bits in the cache
-
-        self.sets = [Set(self.associativity,self.blockSize,bin(i).rjust(self.indexBits,'0')) for i in range(numberofSets)] # make a list of sets
+        self.sets = [Set(self.associativity,self.blockSize,bin(i)[2:].rjust(self.indexBits,'0')) for i in range(numberofSets)] # make a list of sets
 
     def extractSetIndex(self,address):
         # print(address)
@@ -103,12 +103,10 @@ class Cache:
         return None # if its a cache miss
 
     def replaceBlock(self,address):
-        address = bin(int(address,16))[2:].rjust(32,'0') # get the same address in binary
-        print(address)
+        address = bin(int(address,16))[2:]# get the same address in binary
         index = self.extractSetIndex(address) # get the index of the set
         block = Block(self.blockSize,0) # the block to be replaced
         tag = address[:self.tagBits] # get the tag bits for the new block
-        print(tag)
         block.storeAddresses(tag,0) # make the new block with lru as 0
         self.sets[index].replaceBlock(block) # replace the least recently block in the set
 
