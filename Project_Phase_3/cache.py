@@ -38,12 +38,12 @@ class Set:
         self.__numOfBlksInSet = numOfBlksInSet
         self.__blocks = []
         self.__indexBits = indexBits
-        for i in range(self.__numOfBlksInSet):
+        for i in range(self.__numOfBlksInSet):  
             self.blocks.append(Block(blockSize))
 
     def findBlock (self, addr):
         offset = math.log2(self.__blocks[0].blockSize) # get the number of off set bits
-        tag = addr[:32-self.__indexBits-offset] # get the tag bits of the address
+        tag = addr[:32-len(self.__indexBits)-offset] # get the tag bits of the address
         for i in range(len(self.__blocks)):
             if tag == self.__blocks[i].tag:
                 return self.__blocks[i]
@@ -62,10 +62,15 @@ class Set:
         for i in range(len(self.__blocks)):
             if self.__blocks[min].lru > self.__blocks[i]:
                 min = i
+        temp = self.__blocks[min]
         self.__blocks[min] = block # Replace that block with given block
-        self.updateLRU(self.__blocks[min])
-        
-            
+        self.updateLRU(self.__blocks[min])   
+        offset = math.log2(self.__blocks[0].blockSize)     
+        if temp.tag == None:
+            return None
+        else:
+            return temp.tag + self.__indexBits + '0'*offset
+
 class Cache:
     # Number of sets
     # List of set objects
@@ -109,7 +114,6 @@ class Cache:
         self.sets[index].replaceBlock(block) # invalidate the block in the set
 
 '''
-
 li $v0, 4
 
 
