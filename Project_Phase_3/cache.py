@@ -101,6 +101,14 @@ class Cache:
             return block.searchAddress(address,self.indexBits) # return the data
         return None # if its a cache miss
 
+    def searchBlock(self,address):
+        address = bin(int(address,16))[2:].rjust(32,'0')# get the same address in binary
+        index = self.extractSetIndex(address) # get the index of the set
+        block = Block(self.blockSize,0) # the block to be replaced
+        tag = address[:self.tagBits] # get the tag bits for the new block
+        block.storeAddresses(tag,0) # make the new block with lru as 0
+        return self.sets[index].findBlock(block) # replace the least recently block in the set
+
     def replaceBlock(self,address):
         address = bin(int(address,16))[2:].rjust(32,'0')# get the same address in binary
         index = self.extractSetIndex(address) # get the index of the set
@@ -114,7 +122,7 @@ class Cache:
         index = self.extractSetIndex(address) # get the index of the set
         block = Block(self.blockSize,0) # the block to be replaced
         block.storeAddresses(None,0) # make the new block with invalid tag
-        self.sets[index].replaceBlock(block) # invalidate the block in the set
+        return self.sets[index].replaceBlock(block) # invalidate the block in the set
 
 
 
