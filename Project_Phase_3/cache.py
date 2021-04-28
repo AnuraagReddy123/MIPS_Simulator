@@ -122,7 +122,7 @@ class Cache:
         index = self.extractSetIndex(address) # get the index of the set
         block = Block(self.blockSize,0) # the block to be replaced
         block.storeAddresses(None,0) # make the new block with invalid tag
-        self.sets[index].replaceBlock(block) # invalidate the block in the set
+        return self.sets[index].replaceBlock(block) # invalidate the block in the set
 
 
 
