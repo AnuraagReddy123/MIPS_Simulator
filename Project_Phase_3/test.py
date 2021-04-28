@@ -21,11 +21,11 @@ print(sys.maxsize)
 
 
 for i in range(5):
-    b = 5
+    y = 5
 
 c = '101'
 d = '123'
 e = c + d + '0'*5
 print(e)
-print(b)
+print(y)
 print(d)
