@@ -1,7 +1,7 @@
 import math
 import sim_glob
 import sys
-
+sim_glob.initialize()
 class Block:
     # valid bit
     # lru
@@ -131,9 +131,21 @@ if __name__ == "__main__":
 
     print(data)
 
+    addr2 = '0x10010008'
+    
+    if l2.access(addr2) == None:
+        l2.replaceBlock(addr2)
+    
+    replacedAddress = ""
+    if l1.access(addr2) == None:
+        replacedAddress = l1.replaceBlock(addr2)
 
+    if l2.access(addr2) != None:
+        l2.removeBlock(addr2)
 
+    l2.replaceBlock(replacedAddress)
 
+    x = 4
 
 '''
 li $v0, 4
