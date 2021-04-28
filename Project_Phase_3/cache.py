@@ -44,7 +44,7 @@ class Set:
     def findBlock (self, addr):
         offset = int(math.log2(self.__blocks[0].blockSize)) # get the number of off set bits
         tag = addr[:32-len(self.__indexBits)-offset] # get the tag bits of the address
-        print(self.__indexBits)
+        # print(self.__indexBits)
         for i in range(len(self.__blocks)):
             if tag == self.__blocks[i].tag:
                 return self.__blocks[i]
@@ -89,12 +89,11 @@ class Cache:
         self.sets = [Set(self.associativity,self.blockSize,bin(i)[2:].rjust(self.indexBits,'0')) for i in range(numberofSets)] # make a list of sets
 
     def extractSetIndex(self,address):
-        # print(address)
         index = int(address[self.tagBits:self.tagBits+self.indexBits],2) # get the indexBits of the address
         return index 
 
     def access(self,address):
-        address = bin(int(address,16))[2:] # get the same address in binary
+        address = bin(int(address,16))[2:].rjust(32,'0') # get the same address in binary
         setNumber = self.extractSetIndex(address) # get the set number
         block = self.sets[setNumber].findBlock(address) # find the block
         if block != None:
@@ -103,14 +102,15 @@ class Cache:
         return None # if its a cache miss
 
     def replaceBlock(self,address):
-        address = bin(int(address,16))[2:]# get the same address in binary
+        address = bin(int(address,16))[2:].rjust(32,'0')# get the same address in binary
         index = self.extractSetIndex(address) # get the index of the set
         block = Block(self.blockSize,0) # the block to be replaced
         tag = address[:self.tagBits] # get the tag bits for the new block
         block.storeAddresses(tag,0) # make the new block with lru as 0
-        self.sets[index].replaceBlock(block) # replace the least recently block in the set
+        return self.sets[index].replaceBlock(block) # replace the least recently block in the set
 
     def removeBlock(self,address):
+        address = bin(int(address,16))[2:].rjust(32,'0')# get the same address in binary
         index = self.extractSetIndex(address) # get the index of the set
         block = Block(self.blockSize,0) # the block to be replaced
         block.storeAddresses(None,0) # make the new block with invalid tag
@@ -129,7 +129,7 @@ if __name__ == "__main__":
     
     data = l1.access(addr)
 
-    print(data)
+    # print(data)
 
     addr2 = '0x10010008'
     
@@ -142,8 +142,8 @@ if __name__ == "__main__":
 
     if l2.access(addr2) != None:
         l2.removeBlock(addr2)
-
-    l2.replaceBlock(replacedAddress)
+    if replacedAddress != None:
+        l2.replaceBlock(replacedAddress)
 
     x = 4
 
