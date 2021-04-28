@@ -34,16 +34,18 @@ class Set:
     # List of block objects
     # Associativity
 
-    def __init__(self, numOfBlksInSet, blockSize, indexBits):
+    def __init__(self, numOfBlksInSet, blockSize, indexBits, numOfSets):
         self.__numOfBlksInSet = numOfBlksInSet
         self.__blocks = []
         self.__indexBits = indexBits
+        self.__numOfSets = numOfSets
         for i in range(self.__numOfBlksInSet):  
             self.__blocks.append(Block(blockSize))
 
     def findBlock (self, addr):
         offset = int(math.log2(self.__blocks[0].blockSize)) # get the number of off set bits
-        tag = addr[:32-len(self.__indexBits)-offset] # get the tag bits of the address
+        numOfIndexBits = int(math.log2(self.__numOfSets))
+        tag = addr[:32-numOfIndexBits-offset] # get the tag bits of the address
         # print(self.__indexBits)
         for i in range(len(self.__blocks)):
             if tag == self.__blocks[i].tag:
@@ -64,8 +66,7 @@ class Set:
             if self.__blocks[min].lru > self.__blocks[i].lru:
                 min = i
         temp = self.__blocks[min]
-        self.__blocks[min] = block # Replace that block with given block
-        self.updateLRU(self.__blocks[min])   
+        self.__blocks[min] = block # Replace that block with given block  
         offset = int(math.log2(self.__blocks[0].blockSize))     
         if temp.tag == None:
             return None
@@ -86,9 +87,11 @@ class Cache:
         numberofSets = self.numofBlocks//self.associativity # get the number of sets
         self.indexBits = int(math.log2(numberofSets)) # get the number of indexBits
         self.tagBits = 32 - self.indexBits - self.offset # get the number of tag bits in the cache
-        self.sets = [Set(self.associativity,self.blockSize,bin(i)[2:].rjust(self.indexBits,'0')) for i in range(numberofSets)] # make a list of sets
+        self.sets = [Set(self.associativity,self.blockSize,bin(i)[2:].rjust(self.indexBits,'0'), numberofSets) for i in range(numberofSets)] # make a list of sets
 
     def extractSetIndex(self,address):
+        if self.indexBits == 0:
+            return 0
         index = int(address[self.tagBits:self.tagBits+self.indexBits],2) # get the indexBits of the address
         return index 
 
@@ -104,10 +107,7 @@ class Cache:
     def searchBlock(self,address):
         address = bin(int(address,16))[2:].rjust(32,'0')# get the same address in binary
         index = self.extractSetIndex(address) # get the index of the set
-        block = Block(self.blockSize,0) # the block to be replaced
-        tag = address[:self.tagBits] # get the tag bits for the new block
-        block.storeAddresses(tag,0) # make the new block with lru as 0
-        return self.sets[index].findBlock(block) # replace the least recently block in the set
+        return self.sets[index].findBlock(address) != None # replace the least recently block in the set
 
     def replaceBlock(self,address):
         address = bin(int(address,16))[2:].rjust(32,'0')# get the same address in binary
@@ -128,35 +128,37 @@ class Cache:
 
 if __name__ == "__main__":
     addr = '0x10010004'
-    l1 = Cache(8, 2, 32)
-    l2 = Cache(8, 4, 128)
+    l1 = Cache(8, 1, 32)
+    l2 = Cache(8, 1, 128)
 
    
-    if l1.access(addr) == None:
+    if l1.searchBlock(addr) == False:
         l1.replaceBlock(addr)
     
     data = l1.access(addr)
 
     # print(data)
 
-    addr2 = '0x10010008'
+    addr2 = '0x10010024'
     
-    if l2.access(addr2) == None:
+    if l2.searchBlock(addr2) == False:
         l2.replaceBlock(addr2)
     
     replacedAddress = ""
-    if l1.access(addr2) == None:
+    if l1.searchBlock(addr2) == False:
         replacedAddress = l1.replaceBlock(addr2)
 
-    if l2.access(addr2) != None:
+    if l2.searchBlock(addr2) == True:
         l2.removeBlock(addr2)
     if replacedAddress != None:
         l2.replaceBlock(replacedAddress)
 
-    x = 4
 
 '''
 li $v0, 4
+
+0x10010004      1000000000001000000000      0100  100
+0x10010008      100000000000100000000000    01  000
 
 
 0x10010000      0b10000000000010000000000   000    000
@@ -194,6 +196,10 @@ tag 26
 set 0       set 1        set 2              ...             set 7
 1   2       
 1   4
+
+
+set 0       0 - 7
+set 1       
 
 
 A B C D A E 
