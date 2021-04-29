@@ -416,15 +416,15 @@ def EX(PC, clock): # Depen reg just for store
     sim_glob.queue.append(next_instruction)
 
 def MEM(PC,clock):
-    #print(sim_glob.result_of_execution)
     instruction_type = sim_glob.result_of_execution['op'] # get the instruction type
     if  instruction_type == 'LOAD':# load instruction
         memory_address = sim_glob.result_of_execution['src']# fetch the memory address in the memory segment
         if sim_glob.L1_cache.searchBlock(memory_address): # hit in L1
-            sim_glob.memoryStallCycles += sim_glob.accessL1 # add the stall cycles
+            sim_glob.memoryStallCycles += sim_glob.accessL1 - 1# add the stall cycles
             word = sim_glob.L1_cache.access(memory_address) # get the data directly
         elif sim_glob.L2_cache.searchBlock(memory_address): # if it is a hit in L2
-            sim_glob.memoryStallCycles += sim_glob.accessL2 # add the stall cycles
+            print("re")
+            sim_glob.memoryStallCycles += sim_glob.accessL2 - 1# add the stall cycles
             word = sim_glob.L2_cache.access(memory_address) # get the data from L2
             address = sim_glob.L2_cache.removeBlock(memory_address) # remove the block from L2 and get the replaced address
             sim_glob.L1_cache.replaceBlock(memory_address) # add the block to L1
@@ -432,7 +432,7 @@ def MEM(PC,clock):
                 sim_glob.L2_cache.replaceBlock(address) # add the replaced address to L2
         else: # if miss in both the caches
             src_index = int(memory_address,16)  - sim_glob.base_address
-            sim_glob.memoryStallCycles += 100 # add the stall cycles
+            sim_glob.memoryStallCycles += sim_glob.accessMemory - 1 # add the stall cycles
             src_index = src_index // 4 # get the destination index
             word = sim_glob.data_segment[src_index] # get the word
             address = sim_glob.L1_cache.replaceBlock(memory_address) # put the new block in L1 and get the replaced address
@@ -454,17 +454,15 @@ def MEM(PC,clock):
         if not sim_glob.L1_cache.searchBlock(memory_address):# if the address was not present in L1 cache
             if not sim_glob.L2_cache.searchBlock(memory_address): # if the address was not present in L2 either
                 address = sim_glob.L1_cache.replaceBlock(memory_address) # put the address in L1 cache and get the replaced address
-                sim_glob.memoryStallCycles += 100 # add the stall cycles
+                sim_glob.memoryStallCycles += sim_glob.accessMemory - 1 # add the stall cycles
                 if address:
                     sim_glob.L2_cache.replaceBlock(address) # add the replaced address to L2
             else: # if the address was present in L2 itself
-                sim_glob.memoryStallCycles += sim_glob.accessL2 # add the stall cycles
                 sim_glob.L2_cache.removeBlock(memory_address) # remove the block from L2
                 address = sim_glob.L1_cache.replaceBlock(memory_address) # put the address in L1 cache and get the replaced address
                 if address:
                     sim_glob.L2_cache.replaceBlock(address) # add the replaced address to L2
-        else:
-            sim_glob.memoryStallCycles += sim_glob.accessL1 # add the stall cycles
+        sim_glob.memoryStallCycles += sim_glob.accessMemory - 1 # add the stall cycles
     elif instruction_type == 'ADD' or instruction_type == 'SUB' or instruction_type == 'SLT':
         dest_register = next(iter(sim_glob.result_of_execution['dest'])) # fetch the destination register
         value = sim_glob.result_of_execution['dest'][dest_register] # get the value to be stored

@@ -12,7 +12,6 @@ class Block:
     # Store memory
 
     def __init__(self,blockSize,lru = 0,tag = None):
-        self.validBit = 0
         self.blockSize = blockSize
         self.tag = tag # empty block
         self.lru = lru # not valid yet
@@ -77,7 +76,8 @@ class Set:
 class Cache:
     # Number of sets
     # List of set objects
-
+    numberOfMisses = 0 # number of times the data was present in the cache
+    numberOfAccesses = 0 # number of times the cache was accessed
     # Functions
     # extractSetIndex
     def __init__(self,blockSize,associativity,cacheSize):
@@ -104,9 +104,14 @@ class Cache:
         return block.searchAddress(address,self.indexBits) # return the data
 
     def searchBlock(self,address):
+        self.numberOfAccesses += 1
         address = bin(int(address,16))[2:].rjust(32,'0')# get the same address in binary
         index = self.extractSetIndex(address) # get the index of the set
-        return self.sets[index].findBlock(address) != None # replace the least recently block in the set
+        if self.sets[index].findBlock(address) == None: # if it was a miss
+            self.numberOfMisses += 1 # increment the number of misses in the cache
+            return False
+        else:
+            return True # if it was a hit
 
     def replaceBlock(self,address):
         address = bin(int(address,16))[2:].rjust(32,'0')# get the same address in binary
@@ -125,32 +130,7 @@ class Cache:
 
 
 
-if __name__ == "__main__":
-    addr = '0x10010004'
-    l1 = Cache(8, 1, 32)
-    l2 = Cache(8, 1, 128)
 
-   
-    if l1.searchBlock(addr) == False:
-        l1.replaceBlock(addr)
-    
-    data = l1.access(addr)
-
-    # print(data)
-
-    addr2 = '0x10010024'
-    
-    if l2.searchBlock(addr2) == False:
-        l2.replaceBlock(addr2)
-    
-    replacedAddress = ""
-    if l1.searchBlock(addr2) == False:
-        replacedAddress = l1.replaceBlock(addr2)
-
-    if l2.searchBlock(addr2) == True:
-        l2.removeBlock(addr2)
-    if replacedAddress != None:
-        l2.replaceBlock(replacedAddress)
 
 
 '''

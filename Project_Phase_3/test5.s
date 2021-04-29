@@ -1,12 +1,8 @@
     .text
 main:
-    LI $t4, 0x00000004
-    LOAD $t5, 0($t3)
-    LOAD $t5, 0($t4)
-    LOAD $t5, 0($t5)
-	LOAD $t6, 0($t3)
+    LI $t2, 0x10010000
+    LOAD $t3, 0($t2)
 
-1  2  3  4  5  6  7  8
-IF ID EX ME WB
-   IF ID EX ME st WB
-      IF ID EX st ME WB 
+#   IF(1)  ID(2)  EX(3)  MEM(4)   WB(5)
+#          IF(2)  ID(3)  EX(4)    MEM(5)                        MEM(104)   WB(105)
+#                 IF(3)  ID(4)    EX(5)                                    MEM(105)    MEM(204)    WB(205)

@@ -79,7 +79,14 @@ if __name__ == "__main__":
     print(f"IPC of the pipeline: {IPC:.3f}")
     # remove the duplicated instructions 
     sim_glob.stalled_instructions = list(OrderedDict.fromkeys(sim_glob.stalled_instructions))
-    print(f"List of stalled instructions {sim_glob.stalled_instructions}")
-    #print(sim_glob.data_segment) uncomment this line to print the data segment
+    print(f"List of stalled instructions due to pipeline {sim_glob.stalled_instructions}")
+    # print(sim_glob.data_segment) uncomment this line to print the data segment
     print(sim_glob.registers)
-    print(sim_glob.data_segment)
+    firstLevelMissRate = 0
+    secondLevelMissRate = 0
+    if sim_glob.L1_cache.numberOfAccesses:
+        firstLevelMissRate = sim_glob.L1_cache.numberOfMisses / sim_glob.L1_cache.numberOfAccesses # miss rate of L1
+    if sim_glob.L2_cache.numberOfAccesses:
+        secondLevelMissRate = sim_glob.L2_cache.numberOfMisses / sim_glob.L2_cache.numberOfAccesses # miss rate of L2
+    print(f"Miss rate of L1 cache: {firstLevelMissRate: .3f}")
+    print(f"Miss rate of L2 cache: {secondLevelMissRate: .3f}")
