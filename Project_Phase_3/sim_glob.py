@@ -21,12 +21,14 @@ def initialize():
     global accessL1
     global accessL2
     global memoryStallCycles
+    global accessMemory
 
     memoryStallCycles = 0 
     L1_cache = ""
     L2_cache = ""
     accessL1 = 0
     accessL2 = 0
+    accessMemory = 0
     latest_clock = 0
     instructions = []  # list of the instructions read from the file
     label_dict = {}  # To store the indices of where the labels are occurring

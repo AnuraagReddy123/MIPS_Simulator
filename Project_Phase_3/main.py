@@ -22,11 +22,12 @@ if __name__ == "__main__":
         cacheSize = int(file.readline())
         sim_glob.accessL2 = int(file.readline())
         sim_glob.L2_cache = cache.Cache(blockSize, assoc, cacheSize)
+        sim_glob.accessMemory = int(file.readline())
 
     data_num = 0
     instr_num = 0
     instr_type = "data"
-    with open('test.s', 'r') as file:
+    with open('test5.s', 'r') as file:
         for instr in file:
             instr = clean_instruction(instr, instr_num)
 
