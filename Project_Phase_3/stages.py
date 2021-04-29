@@ -426,18 +426,23 @@ def MEM(PC,clock):
         elif sim_glob.L2_cache.searchBlock(memory_address): # if it is a hit in L2
             sim_glob.memoryStallCycles += sim_glob.accessL2 - 1# add the stall cycles
             word = sim_glob.L2_cache.access(memory_address) # get the data from L2
-            address = sim_glob.L2_cache.removeBlock(memory_address) # remove the block from L2 and get the replaced address
-            sim_glob.L1_cache.replaceBlock(memory_address) # add the block to L1
+            address = sim_glob.L1_cache.replaceBlock(memory_address) # replace the block from L1 and get the replaced address
+            sim_glob.L1_cache.access(memory_address) # update the LRU
             if address:
+                address = hex(int(address,2))[2:]
                 sim_glob.L2_cache.replaceBlock(address) # add the replaced address to L2
+                sim_glob.L2_cache.access(address) # update the LRU
+            sim_glob.L2_cache.removeBlock(memory_address) # remove the address from L2
         else: # if miss in both the caches
             src_index = int(memory_address,16)  - sim_glob.base_address
             sim_glob.memoryStallCycles += sim_glob.accessMemory - 1 # add the stall cycles
             src_index = src_index // 4 # get the destination index
-            word = sim_glob.data_segment[src_index] # get the word
             address = sim_glob.L1_cache.replaceBlock(memory_address) # put the new block in L1 and get the replaced address
+            word = sim_glob.L1_cache.access(memory_address) # get the data directly
             if address:
+                address = hex(int(address,2))[2:]
                 sim_glob.L2_cache.replaceBlock(address) # add the replaced address to L2
+                sim_glob.L2_cache.access(address) # update the LRU
         dest_register = next(iter(sim_glob.result_of_execution['dest'])) # get the destination register 
         if sim_glob.data_forwarding:
             for i in range(len(sim_glob.que_reg)-1, -1, -1): # search the queue to update the value
