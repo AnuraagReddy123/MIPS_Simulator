@@ -128,7 +128,8 @@ class Cache:
         block.storeAddresses(None,0) # make the new block with invalid tag
         return self.sets[index].replaceBlock(block) # invalidate the block in the set
 
-
+    def increaseAccess(self): # block was accessed
+        self.numberOfAccesses += 1
 
 
 
