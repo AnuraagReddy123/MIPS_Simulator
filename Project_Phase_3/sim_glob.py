@@ -15,6 +15,14 @@ def initialize():
     global latest_clock
     global stalled_instructions
     global data_forwarding
+    global L1_cache
+    global L2_cache
+    global accessL1
+    global accessL2
+    L1_cache = ""
+    L2_cache = ""
+    accessL1 = 0
+    accessL2 = 0
     latest_clock = 0
     instructions = []  # list of the instructions read from the file
     label_dict = {}  # To store the indices of where the labels are occurring
