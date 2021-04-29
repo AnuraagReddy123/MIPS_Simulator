@@ -71,6 +71,8 @@ class Set:
         if temp.tag == None:
             return None
         else:
+            if self.__numOfSets == 1:
+                return temp.tag+'0'*offset
             return temp.tag + self.__indexBits + '0'*offset
 
 class Cache:
