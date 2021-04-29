@@ -27,6 +27,7 @@ class Block:
         if self.tag == None or self.tag != tag:
             return None # if the block was empty or the block doesn't have the required tag
         index = int(address,2) - sim_glob.base_address # fetch the index in the memory segment
+        index = index // 4
         return sim_glob.data_segment[index] # return the contents of the memory at the index
 
 class Set:
@@ -99,10 +100,8 @@ class Cache:
         address = bin(int(address,16))[2:].rjust(32,'0') # get the same address in binary
         setNumber = self.extractSetIndex(address) # get the set number
         block = self.sets[setNumber].findBlock(address) # find the block
-        if block != None:
-            self.sets[setNumber].updateLRU(block)
-            return block.searchAddress(address,self.indexBits) # return the data
-        return None # if its a cache miss
+        self.sets[setNumber].updateLRU(block)
+        return block.searchAddress(address,self.indexBits) # return the data
 
     def searchBlock(self,address):
         address = bin(int(address,16))[2:].rjust(32,'0')# get the same address in binary

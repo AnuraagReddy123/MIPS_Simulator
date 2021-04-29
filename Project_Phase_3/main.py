@@ -26,7 +26,7 @@ if __name__ == "__main__":
     data_num = 0
     instr_num = 0
     instr_type = "data"
-    with open('test4.s', 'r') as file:
+    with open('test.s', 'r') as file:
         for instr in file:
             instr = clean_instruction(instr, instr_num)
 
@@ -70,6 +70,7 @@ if __name__ == "__main__":
         else:
             WB(instruction[stage][0],instruction[stage][1])
     number_of_stalls = len(sim_glob.stalled_instructions)
+    sim_glob.latest_clock += sim_glob.memoryStallCycles
     print(f"Number of cycles: {sim_glob.latest_clock}")
     print(f"Number of stalls: {number_of_stalls}")
     number_of_instructions = len(sim_glob.instructions)
