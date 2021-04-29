@@ -3,11 +3,26 @@ from utility_func import *
 from stages import *
 from collections import OrderedDict
 from op import *
+import cache
 
 
 sim_glob.initialize()
 
 if __name__ == "__main__":
+
+    # Read cache parameters
+    with open('cache_param.txt', 'r') as file:
+        blockSize = int(file.readline())
+        assoc = int(file.readline())
+        cacheSize = int(file.readline())
+        sim_glob.accessL1 = int(file.readline())
+        sim_glob.L1_cache = cache.Cache(blockSize, assoc, cacheSize)
+        blockSize = int(file.readline())
+        assoc = int(file.readline())
+        cacheSize = int(file.readline())
+        sim_glob.accessL2 = int(file.readline())
+        sim_glob.L2_cache = cache.Cache(blockSize, assoc, cacheSize)
+
     data_num = 0
     instr_num = 0
     instr_type = "data"
