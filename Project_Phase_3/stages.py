@@ -1,7 +1,7 @@
+from os import access
 from utility_func import fetch_imm, fetch_label, fetch_reg, fetch_val, op_type
 import sim_glob
 from op import *
-import cache
 
 class DepReg:
     def __init__(self, regi, pc, val):
@@ -420,15 +420,25 @@ def MEM(PC,clock):
     instruction_type = sim_glob.result_of_execution['op'] # get the instruction type
     if  instruction_type == 'LOAD':# load instruction
         memory_address = sim_glob.result_of_execution['src']# fetch the memory address in the memory segment
-        if sim_glob.L1.searchBlock(memory_address):
-            
-            pass
-        else:
-            pass
-        src_index = int(memory_address,16)  - sim_glob.base_address
-        src_index = src_index // 4 # get the destination index
+        if sim_glob.L1_cache.searchBlock(memory_address): # hit in L1
+            sim_glob.memoryStallCycles += sim_glob.accessL1 # add the stall cycles
+            word = sim_glob.L1_cache.access(memory_address) # get the data directly
+        elif sim_glob.L2_cache.searchBlock(memory_address): # if it is a hit in L2
+            sim_glob.memoryStallCycles += sim_glob.accessL2 # add the stall cycles
+            word = sim_glob.L2_cache.access(memory_address) # get the data from L2
+            address = sim_glob.L2_cache.removeBlock(memory_address) # remove the block from L2 and get the replaced address
+            sim_glob.L1_cache.replaceBlock(memory_address) # add the block to L1
+            if address:
+                sim_glob.L2_cache.replaceBlock(address) # add the replaced address to L2
+        else: # if miss in both the caches
+            src_index = int(memory_address,16)  - sim_glob.base_address
+            sim_glob.memoryStallCycles += 100 # add the stall cycles
+            src_index = src_index // 4 # get the destination index
+            word = sim_glob.data_segment[src_index] # get the word
+            address = sim_glob.L1_cache.replaceBlock(memory_address) # put the new block in L1 and get the replaced address
+            if address:
+                sim_glob.L2_cache.replaceBlock(address) # add the replaced address to L2
         dest_register = next(iter(sim_glob.result_of_execution['dest'])) # get the destination register 
-        word = sim_glob.data_segment[src_index] # get the word
         if sim_glob.data_forwarding:
             for i in range(len(sim_glob.que_reg)-1, -1, -1): # search the queue to update the value
                 if sim_glob.que_reg[i].pc == PC: # if PC is found
@@ -441,6 +451,20 @@ def MEM(PC,clock):
         dest_index = dest_index // 4 # get the destination index
         word = sim_glob.result_of_execution['dest'] # get the word from the register
         sim_glob.data_segment[dest_index] = word # store the word in the memory
+        if not sim_glob.L1_cache.searchBlock(memory_address):# if the address was not present in L1 cache
+            if not sim_glob.L2_cache.searchBlock(memory_address): # if the address was not present in L2 either
+                address = sim_glob.L1_cache.replaceBlock(memory_address) # put the address in L1 cache and get the replaced address
+                sim_glob.memoryStallCycles += 100 # add the stall cycles
+                if address:
+                    sim_glob.L2_cache.replaceBlock(address) # add the replaced address to L2
+            else: # if the address was present in L2 itself
+                sim_glob.memoryStallCycles += sim_glob.accessL2 # add the stall cycles
+                sim_glob.L2_cache.removeBlock(memory_address) # remove the block from L2
+                address = sim_glob.L1_cache.replaceBlock(memory_address) # put the address in L1 cache and get the replaced address
+                if address:
+                    sim_glob.L2_cache.replaceBlock(address) # add the replaced address to L2
+        else:
+            sim_glob.memoryStallCycles += sim_glob.accessL1 # add the stall cycles
     elif instruction_type == 'ADD' or instruction_type == 'SUB' or instruction_type == 'SLT':
         dest_register = next(iter(sim_glob.result_of_execution['dest'])) # fetch the destination register
         value = sim_glob.result_of_execution['dest'][dest_register] # get the value to be stored

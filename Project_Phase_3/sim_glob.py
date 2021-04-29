@@ -20,6 +20,9 @@ def initialize():
     global L2_cache
     global accessL1
     global accessL2
+    global memoryStallCycles
+
+    memoryStallCycles = 0 
     L1_cache = ""
     L2_cache = ""
     accessL1 = 0
@@ -31,7 +34,7 @@ def initialize():
     comments = {}
     data_forwarding = True
     base_address = int("0x10010000", 16)  # address of the first byte
-
+    
     registers = {'$ze': '00000000', '$at': '00000000', '$v0': '00000000', '$v1': '00000000',
                  '$a0': '00000000', '$a1': '00000000', '$a2': '00000000', '$a3': '00000000',
                  '$t0': '00000000', '$t1': '00000000', '$t2': '00000000', '$t3': '00000000',
@@ -41,7 +44,7 @@ def initialize():
                  '$t8': '00000000', '$t9': '00000000', '$k0': '00000000', '$k1': '00000000',
                  '$gp': '00000000', '$sp': '00000000', '$s8': '00000000', '$ra': '00000000', }
 
-    data_segment = ['00000000'] * 10  # data segment (4 Kilobytes)
+    data_segment = ['00000000'] * 100  # data segment (4 Kilobytes)
     queue = []  # queue for storing stages of pipeline
     global que_reg
     que_reg = []  # list for keeping track of execution operations
