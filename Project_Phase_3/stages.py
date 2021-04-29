@@ -1,7 +1,7 @@
 from utility_func import fetch_imm, fetch_label, fetch_reg, fetch_val, op_type
 import sim_glob
 from op import *
-
+import cache
 
 class DepReg:
     def __init__(self, regi, pc, val):
@@ -420,6 +420,11 @@ def MEM(PC,clock):
     instruction_type = sim_glob.result_of_execution['op'] # get the instruction type
     if  instruction_type == 'LOAD':# load instruction
         memory_address = sim_glob.result_of_execution['src']# fetch the memory address in the memory segment
+        if sim_glob.L1.searchBlock(memory_address):
+            
+            pass
+        else:
+            pass
         src_index = int(memory_address,16)  - sim_glob.base_address
         src_index = src_index // 4 # get the destination index
         dest_register = next(iter(sim_glob.result_of_execution['dest'])) # get the destination register 

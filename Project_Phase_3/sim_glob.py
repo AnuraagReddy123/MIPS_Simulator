@@ -1,3 +1,5 @@
+import cache
+
 def initialize():
     global instructions
     global label_dict
@@ -15,6 +17,8 @@ def initialize():
     global latest_clock
     global stalled_instructions
     global data_forwarding
+    global L1
+    global L2
     latest_clock = 0
     instructions = []  # list of the instructions read from the file
     label_dict = {}  # To store the indices of where the labels are occurring
@@ -22,6 +26,8 @@ def initialize():
     comments = {}
     data_forwarding = True
     base_address = int("0x10010000", 16)  # address of the first byte
+    L1 = cache.Cache(8,1,32)
+    L2 = cache.Cache(8,1,128)
 
     registers = {'$ze': '00000000', '$at': '00000000', '$v0': '00000000', '$v1': '00000000',
                  '$a0': '00000000', '$a1': '00000000', '$a2': '00000000', '$a3': '00000000',
@@ -44,6 +50,7 @@ def initialize():
     op_dict = {"ADD": 0, "SUB": 1, "BNE": 4, "BEQ": 5,
                "JUMP": 6, "LOAD": 2, "STORE": 3, "LI": 7, "SLT": 8}
     stalled_instructions = []
+    
     '''
         OP CODES
         ADD     0
