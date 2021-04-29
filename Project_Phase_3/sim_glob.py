@@ -22,7 +22,7 @@ def initialize():
     global accessL2
     global memoryStallCycles
     global accessMemory
-
+    
     memoryStallCycles = 0 
     L1_cache = ""
     L2_cache = ""
