@@ -3,11 +3,27 @@ from utility_func import *
 from stages import *
 from collections import OrderedDict
 from op import *
+import cache
 
 
 sim_glob.initialize()
 
 if __name__ == "__main__":
+
+    # Read cache parameters
+    with open('cache_param.txt', 'r') as file:
+        blockSize = int(file.readline())
+        assoc = int(file.readline())
+        cacheSize = int(file.readline())
+        sim_glob.accessL1 = int(file.readline())
+        sim_glob.L1_cache = cache.Cache(blockSize, assoc, cacheSize)
+        blockSize = int(file.readline())
+        assoc = int(file.readline())
+        cacheSize = int(file.readline())
+        sim_glob.accessL2 = int(file.readline())
+        sim_glob.L2_cache = cache.Cache(blockSize, assoc, cacheSize)
+        sim_glob.accessMemory = int(file.readline())
+
     data_num = 0
     instr_num = 0
     instr_type = "data"
@@ -52,6 +68,7 @@ if __name__ == "__main__":
         else:
             WB(instruction[stage][0],instruction[stage][1])
     number_of_stalls = len(sim_glob.stalled_instructions)
+    sim_glob.latest_clock += sim_glob.memoryStallCycles
     print(f"Number of cycles: {sim_glob.latest_clock}")
     print(f"Number of stalls: {number_of_stalls}")
     number_of_instructions = len(sim_glob.instructions)
@@ -59,7 +76,14 @@ if __name__ == "__main__":
     print(f"IPC of the pipeline: {IPC:.3f}")
     # remove the duplicated instructions 
     sim_glob.stalled_instructions = list(OrderedDict.fromkeys(sim_glob.stalled_instructions))
-    print(f"List of stalled instructions {sim_glob.stalled_instructions}")
-    #print(sim_glob.data_segment) uncomment this line to print the data segment
+    print(f"List of stalled instructions due to pipeline {sim_glob.stalled_instructions}")
+    # print(sim_glob.data_segment) uncomment this line to print the data segment
     print(sim_glob.registers)
-    print(sim_glob.data_segment)
+    firstLevelMissRate = 0
+    secondLevelMissRate = 0
+    if sim_glob.L1_cache.numberOfAccesses:
+        firstLevelMissRate = sim_glob.L1_cache.numberOfMisses / sim_glob.L1_cache.numberOfAccesses # miss rate of L1
+    if sim_glob.L2_cache.numberOfAccesses:
+        secondLevelMissRate = sim_glob.L2_cache.numberOfMisses / sim_glob.L2_cache.numberOfAccesses # miss rate of L2
+    print(f"Miss rate of L1 cache: {firstLevelMissRate: .3f}")
+    print(f"Miss rate of L2 cache: {secondLevelMissRate: .3f}")
