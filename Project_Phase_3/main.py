@@ -11,7 +11,7 @@ if __name__ == "__main__":
     data_num = 0
     instr_num = 0
     instr_type = "data"
-    with open('test4.s', 'r') as file:
+    with open('test.s', 'r') as file:
         for instr in file:
             instr = clean_instruction(instr, instr_num)
 
@@ -30,10 +30,7 @@ if __name__ == "__main__":
                         sim_glob.instructions.append(instr)
                         instr_num += 1
 
-    '''
-    Instructions would be
-    add, sub, load, load_int, store, bne, jump
-    '''
+
     forwarding = str(input("Enter yes if forwarding needs to be enabled else enter no: ")).lower()
     if forwarding == "yes":
         sim_glob.data_forwarding = True
