@@ -132,4 +132,4 @@ Our simulator will output the following information:
 5. Registers
 6. Miss rate of L1 cache upto 3 decimal places
 7. Miss rate of L2 cache upto 3 decimal places
-8. Data Segment(To print it, uncomment the line 83 in main.py file )
+8. Data Segment(To print it, uncomment the line 80 in main.py file )
